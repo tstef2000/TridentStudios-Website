@@ -75,7 +75,37 @@ python -m http.server 8000
 - Add DNS records pointing to GitHub
 - Or use GitHub's name servers
 
-### 4. Traditional Hosting (Godaddy, Bluehost, etc.)
+### 4. Pterodactyl Panel
+
+Pterodactyl is a game-server management panel that uses **eggs** as server templates.
+Because this site is pure static HTML/CSS/JS, you need an egg that runs a **web server** — not a game server or a Node.js app egg.
+
+#### ✅ Recommended Egg: Nginx (best choice for static sites)
+
+1. **Get the Nginx egg** from the community eggs repository:
+   [https://github.com/pterodactyl-community/eggs/tree/master/webservers/nginx](https://github.com/pterodactyl-community/eggs/tree/master/webservers/nginx)
+   - Download `egg-nginx.json` and import it in your Pterodactyl admin panel under **Nests → Import Egg**.
+2. **Create a new server** using the Nginx egg.
+3. **Set the port** (e.g. `80` or any port your host assigns).
+4. Once the server is created, **upload all website files** (HTML, CSS, JS, images, videos) to the server's `/home/container/` directory via SFTP or the file manager.
+5. Ensure `index.html` is in the root of that directory.
+6. Start the server — Nginx will serve your site on the assigned port.
+
+#### 🔄 Alternative Egg: Node.js (if Nginx egg is unavailable)
+
+If your panel only has a Node.js egg available, you can use it to run a simple static file server:
+
+1. **Create a new server** using the **Node.js** egg.
+2. **Set the startup command** to:
+   ```
+   npx serve -s . -p {{SERVER_PORT}}
+   ```
+3. Upload all website files to the server's home directory via SFTP.
+4. Start the server — it will serve your static files on the assigned port.
+
+> **Note:** Pterodactyl is primarily designed for game servers. For production websites, a dedicated static host like **Netlify** or **GitHub Pages** (free options above) will be more reliable and easier to maintain.
+
+### 5. Traditional Hosting (Godaddy, Bluehost, etc.)
 
 **Steps:**
 1. Upload files via FTP/SFTP to public_html folder
