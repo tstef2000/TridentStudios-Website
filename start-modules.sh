@@ -25,14 +25,6 @@ header() {
 # Start orchestration
 echo -e "\n${BOLD_BLUE}[Orchestrator] Module orchestration starting...${NC}"
 
-# Force git update before starting (ignore errors if not a git repo)
-if [[ -d ".git" ]]; then
-  echo -e "${CYAN}[Orchestrator] Updating from git repository...${NC}"
-  git fetch origin 2>/dev/null || true
-  git reset --hard origin/main 2>/dev/null || true
-  echo -e "${GREEN}[Orchestrator] Git update complete${NC}"
-fi
-
 # Helper to test enabled status: true or 1
 is_enabled() { [[ "$1" =~ ^(true|1)$ ]]; }
 
