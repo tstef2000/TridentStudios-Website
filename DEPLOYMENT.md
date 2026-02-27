@@ -105,6 +105,9 @@ If your panel only has a Node.js egg available, you can use it to run a simple s
 
 > **Note:** Pterodactyl is primarily designed for game servers. For production websites, a dedicated static host like **Netlify** or **GitHub Pages** (free options above) will be more reliable and easier to maintain.
 
+#### 🔒 Adding HTTPS to your Pterodactyl-hosted site
+See the [Certbot / Let's Encrypt (HTTPS)](#-certbot--lets-encrypt-https) section below for step-by-step instructions on obtaining a free SSL certificate for your domain.
+
 ### 5. Traditional Hosting (Godaddy, Bluehost, etc.)
 
 **Steps:**
@@ -134,7 +137,94 @@ If your panel only has a Node.js egg available, you can use it to run a simple s
 ### Domain Setup
 1. Register domain (Namecheap, GoDaddy, Google Domains)
 2. Configure DNS records for your hosting service
-3. Enable HTTPS (automatic on Netlify/Vercel)
+3. Enable HTTPS (automatic on Netlify/Vercel, or use Certbot — see below)
+
+### 🔒 Certbot / Let's Encrypt (HTTPS)
+
+Certbot issues a **free SSL/TLS certificate** from Let's Encrypt so your site is served over `https://`.
+
+#### What domain do I enter?
+
+Use **your own registered domain name** — the same domain whose DNS `A` record points to the server's IP address.
+
+| Scenario | What to enter |
+|---|---|
+| You own `example.com` | `example.com` |
+| You also want `www` to work | `example.com www.example.com` (both) |
+| Pterodactyl sub-domain (e.g. a domain your host gave you) | That full hostname, e.g. `mysite.mypanel.net` |
+
+> ⚠️ **The domain must already point to your server's IP before you run Certbot.**
+> Set an `A` record in your domain registrar / DNS provider: `A @ <your server IP>` (and optionally `A www <your server IP>`).
+> Certbot will fail if the DNS hasn't propagated yet.
+
+#### Prerequisites
+
+- A Linux server you have SSH / root access to (or a VPS; **not** inside a Pterodactyl container — see note below)
+- Nginx or Apache already installed and running
+- Port `80` open in your firewall (Certbot's HTTP challenge needs it)
+
+#### Install Certbot
+
+```bash
+# Ubuntu / Debian
+sudo apt update && sudo apt install -y certbot python3-certbot-nginx
+
+# CentOS / RHEL / AlmaLinux
+sudo dnf install -y certbot python3-certbot-nginx
+```
+
+#### Obtain your certificate
+
+Replace `example.com` with your actual domain:
+
+```bash
+# For a single domain
+sudo certbot --nginx -d example.com
+
+# For a domain + www subdomain
+sudo certbot --nginx -d example.com -d www.example.com
+```
+
+Certbot will ask for your **email address** (used for renewal reminders) and prompt you to agree to the Terms of Service. It will then automatically edit your Nginx config to enable HTTPS and redirect HTTP → HTTPS.
+
+#### Auto-renewal
+
+Certificates expire after 90 days. Certbot installs a cron job / systemd timer that renews automatically. Test it with:
+
+```bash
+sudo certbot renew --dry-run
+```
+
+#### Pterodactyl-specific note
+
+Pterodactyl containers **do not have root access**, so Certbot must be run on the **host machine** (the server running the Wings daemon), not inside the container. After obtaining the certificate on the host, configure your reverse proxy (Nginx/Caddy on the host) to terminate SSL and forward traffic to the container's port.
+
+Example Nginx reverse-proxy snippet on the **host** (after running Certbot):
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name example.com www.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:<CONTAINER_PORT>;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+
+# Redirect HTTP → HTTPS
+server {
+    listen 80;
+    server_name example.com www.example.com;
+    return 301 https://$host$request_uri;
+}
+```
+
+Replace `<CONTAINER_PORT>` with the port Pterodactyl assigned to your server.
 
 ### Email Setup
 1. Set up business email (Gmail, Zoho, your host provider)
