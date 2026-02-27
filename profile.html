@@ -175,11 +175,6 @@
                             <i class="fas fa-shield-alt"></i>
                         </button>
                     </div>
-
-                    <div class="profile-oauth-notice" id="oauthPasswordNotice" style="display:none;">
-                        <i class="fas fa-info-circle"></i>
-                        Your account is linked via <strong id="oauthProviderName"></strong>. Manage your password through that provider.
-                    </div>
                 </section>
 
             </div>
@@ -252,13 +247,6 @@
         renderAvatar(user, document.getElementById('avatarPreviewLarge'));
         if (user.avatarUrl) document.getElementById('avatarUrlInput').value = user.avatarUrl;
 
-        // OAuth users can't change password here
-        if (user.provider) {
-            document.getElementById('passwordFormWrap').style.display    = 'none';
-            document.getElementById('oauthPasswordNotice').style.display = '';
-            document.getElementById('oauthProviderName').textContent     =
-                user.provider.charAt(0).toUpperCase() + user.provider.slice(1);
-        }
 
         // ── Section nav ───────────────────────────────────────────────────
         document.querySelectorAll('.profile-nav-btn[data-section]').forEach(btn => {
