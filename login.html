@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="oauth-config.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body class="login-body">
 
@@ -53,15 +51,6 @@
                 </button>
                 <div class="auth-link">
                     <a href="#" id="forgotPasswordLink">Forgot password?</a>
-                </div>
-                <div class="auth-divider"><span>or continue with</span></div>
-                <div class="oauth-row">
-                    <button type="button" class="oauth-btn oauth-google" id="googleLogin">
-                        <i class="fab fa-google"></i> Google
-                    </button>
-                    <button type="button" class="oauth-btn oauth-discord" id="discordLogin">
-                        <i class="fab fa-discord"></i> Discord
-                    </button>
                 </div>
                 <div class="auth-switch">
                     Don't have an account? <a href="#" id="switchToSignup">Create one</a>
@@ -117,27 +106,5 @@
 
     <div id="notification" class="notification"></div>
     <script src="auth.js"></script>
-    <script>
-    window.addEventListener('load', function() {
-        if (typeof google !== 'undefined' && typeof OAUTH_CONFIG !== 'undefined' &&
-            OAUTH_CONFIG.google.clientId && OAUTH_CONFIG.google.clientId !== 'YOUR_GOOGLE_CLIENT_ID') {
-            google.accounts.id.initialize({
-                client_id: OAUTH_CONFIG.google.clientId,
-                callback: handleGoogleOAuth,
-                auto_select: false
-            });
-            
-            // Render button as a fallback
-            const googleLoginBtn = document.getElementById('googleLogin');
-            if (googleLoginBtn) {
-                google.accounts.id.renderButton(googleLoginBtn, {
-                    theme: 'dark',
-                    size: 'large',
-                    text: 'signin_with'
-                });
-            }
-        }
-    });
-    </script>
 </body>
 </html>
