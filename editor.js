@@ -1,314 +1,271 @@
-// Website Editor Manager
+// ============================================================
+// Trident Studios — Website Editor (Iframe-based live editing)
+// ============================================================
+
 class WebsiteEditor {
     constructor() {
         this.currentUser = JSON.parse(localStorage.getItem('trident_currentUser'));
-        
-        // Check if user has editor access
+
         if (!this.currentUser || (this.currentUser.role !== 'website-editor' && this.currentUser.role !== 'admin')) {
             window.location.href = 'dashboard.html';
+            return;
         }
 
-        this.canvas = document.getElementById('canvasContent');
-        this.selectedElement = null;
-        this.draggedElement = null;
-        this.elements = this.loadElements();
-        
-        this.initializeEventListeners();
-        this.renderElements();
+        this.iframe         = document.getElementById('websitePreviewFrame');
+        this.canvas         = document.getElementById('canvasContent'); // compat shim
+        this.selectedEl     = null;
+        this.pendingChanges = {};
+
+        this.initEditorControls();
+        this.iframe.addEventListener('load', () => this.initIframeEditing());
         this.logAction('Opened editor', 'Website editor session started');
     }
 
-    initializeEventListeners() {
-        // Draggable elements from sidebar
-        document.querySelectorAll('.element-item').forEach(item => {
-            item.addEventListener('dragstart', (e) => this.handleDragStart(e));
+    // ── Inject editing helpers into the iframe after it loads ──────────────
+    initIframeEditing() {
+        let doc;
+        try { doc = this.iframe.contentWindow.document; } catch (e) { return; }
+
+        const existing = doc.getElementById('ts-editor-styles');
+        if (existing) existing.remove();
+
+        const style = doc.createElement('style');
+        style.id = 'ts-editor-styles';
+        style.textContent = `
+            .ts-edit-bar {
+                position: fixed; top: 0; left: 0; right: 0;
+                background: rgba(1, 12, 20, 0.97);
+                border-bottom: 2px solid rgba(43,179,255,0.4);
+                padding: 7px 16px;
+                display: flex; align-items: center; gap: 12px;
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 13px; color: #e6f6ff;
+                z-index: 999999; pointer-events: none;
+            }
+            .ts-edit-bar-badge {
+                background: rgba(43,179,255,0.18); border: 1px solid rgba(43,179,255,0.4);
+                color: #2bb3ff; font-size: 10px; font-weight: 700;
+                letter-spacing: 1px; padding: 3px 8px; border-radius: 4px;
+            }
+            .ts-selectable { cursor: pointer !important; }
+            .ts-selectable:hover { outline: 2px dashed rgba(43,179,255,0.6) !important; outline-offset: 3px; }
+            .ts-selected { outline: 2px solid #2bb3ff !important; outline-offset: 3px;
+                box-shadow: 0 0 0 5px rgba(43,179,255,0.15) !important; }
+        `;
+        doc.head.appendChild(style);
+
+        if (!doc.querySelector('.ts-edit-bar')) {
+            const bar = doc.createElement('div');
+            bar.className = 'ts-edit-bar';
+            bar.innerHTML = `
+                <span style="font-weight:600;">&#9998; Trident Studios Editor</span>
+                <span class="ts-edit-bar-badge">EDIT MODE</span>
+                <span style="opacity:0.5; font-size:12px;">— Click any text to select &amp; edit</span>
+            `;
+            doc.body.insertBefore(bar, doc.body.firstChild);
+            doc.body.style.paddingTop = '38px';
+        }
+
+        const SELECTORS = 'h1, h2, h3, h4, h5, p, a, button, .hero-title, .hero-subtitle, .section-title, .service-card h3, .service-card p, .portfolio-item h3, .portfolio-item p';
+        doc.querySelectorAll(SELECTORS).forEach(el => {
+            if (el.closest('.ts-edit-bar')) return;
+            el.classList.add('ts-selectable');
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                doc.querySelectorAll('.ts-selected').forEach(s => s.classList.remove('ts-selected'));
+                el.classList.add('ts-selected');
+                this.selectedEl = el;
+                this.updatePropertiesPanel(el);
+            }, true);
         });
 
-        // Canvas drop zone
-        this.canvas.addEventListener('dragover', (e) => this.handleDragOver(e));
-        this.canvas.addEventListener('drop', (e) => this.handleDrop(e));
+        // Prevent navigation away while in edit mode
+        doc.querySelectorAll('a[href]').forEach(a => {
+            if (!a.closest('.ts-edit-bar')) {
+                a.addEventListener('click', e => e.preventDefault(), true);
+            }
+        });
 
-        // Preview and Publish buttons
-        document.getElementById('previewBtn').addEventListener('click', () => this.preview());
-        document.getElementById('publishBtn').addEventListener('click', () => this.publish());
+        // Ensure videos play
+        doc.querySelectorAll('video[autoplay]').forEach(v => v.play().catch(() => {}));
+    }
+
+    // ── Properties panel for selected element ─────────────────────────────
+    updatePropertiesPanel(el) {
+        const panel = document.getElementById('propertiesPanel');
+        const tag   = el.tagName.toLowerCase();
+
+        panel.innerHTML = `
+            <div class="property-item">
+                <label>Selected element</label>
+                <p style="color:#2bb3ff;font-size:12px;margin:4px 0 12px;">&lt;${tag}&gt;</p>
+            </div>
+            <div class="property-item">
+                <label>HTML Content</label>
+                <textarea id="elHtmlInput" style="width:100%;height:90px;padding:8px;
+                    background:rgba(3,23,35,0.85);color:#e6f6ff;
+                    border:1px solid rgba(43,179,255,0.3);border-radius:6px;
+                    resize:vertical;font-size:12px;font-family:monospace;">${el.innerHTML}</textarea>
+                <button id="applyHtmlBtn" style="margin-top:8px;width:100%;padding:9px;
+                    background:linear-gradient(135deg,#2bb3ff,#00d1ff);color:#031723;
+                    border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:13px;">
+                    &#9998; Apply Changes
+                </button>
+            </div>
+            ${tag === 'a' ? `
+            <div class="property-item" style="margin-top:12px;">
+                <label>Link URL</label>
+                <input type="text" id="elHrefInput" value="${el.getAttribute('href') || ''}"
+                    placeholder="https://..."
+                    style="width:100%;padding:8px;background:rgba(3,23,35,0.85);color:#e6f6ff;
+                    border:1px solid rgba(43,179,255,0.3);border-radius:6px;font-size:13px;">
+            </div>` : ''}
+        `;
+
+        document.getElementById('applyHtmlBtn').addEventListener('click', () => {
+            el.innerHTML = document.getElementById('elHtmlInput').value;
+            el.dataset.tsChanged = 'true';
+            this.savePendingChanges();
+            this.showNotification('Content updated', 'success');
+        });
+
+        const hrefInput = document.getElementById('elHrefInput');
+        if (hrefInput) {
+            hrefInput.addEventListener('input', e => {
+                el.href = e.target.value;
+                el.dataset.tsChanged = 'true';
+                this.savePendingChanges();
+            });
+        }
+    }
+
+    // ── Wire up all editor controls ────────────────────────────────────────
+    initEditorControls() {
+        document.getElementById('previewBtn').addEventListener('click', () => {
+            document.getElementById('previewModal').style.display = 'flex';
+            this.logAction('Previewed website', 'Full preview opened');
+        });
+
         document.getElementById('closePreviewBtn').addEventListener('click', () => {
             document.getElementById('previewModal').style.display = 'none';
         });
 
-        // Style controls
-        document.getElementById('fontSizeInput').addEventListener('input', (e) => {
+        document.getElementById('publishBtn').addEventListener('click', () => this.publish());
+
+        document.getElementById('desktopBtn').addEventListener('click', () => {
+            this.iframe.classList.remove('mobile-view');
+            document.getElementById('desktopBtn').classList.add('active');
+            document.getElementById('mobileBtn').classList.remove('active');
+        });
+
+        document.getElementById('mobileBtn').addEventListener('click', () => {
+            this.iframe.classList.add('mobile-view');
+            document.getElementById('mobileBtn').classList.add('active');
+            document.getElementById('desktopBtn').classList.remove('active');
+        });
+
+        document.getElementById('bgColorInput').addEventListener('input', e => {
+            if (this.selectedEl) { this.selectedEl.style.backgroundColor = e.target.value; this.savePendingChanges(); }
+        });
+        document.getElementById('textColorInput').addEventListener('input', e => {
+            if (this.selectedEl) { this.selectedEl.style.color = e.target.value; this.savePendingChanges(); }
+        });
+        document.getElementById('fontSizeInput').addEventListener('input', e => {
             document.getElementById('fontSizeValue').textContent = e.target.value + 'px';
-            if (this.selectedElement) {
-                this.selectedElement.style.fontSize = e.target.value + 'px';
-            }
+            if (this.selectedEl) { this.selectedEl.style.fontSize = e.target.value + 'px'; this.savePendingChanges(); }
+        });
+        document.getElementById('paddingInput').addEventListener('input', e => {
+            if (this.selectedEl) { this.selectedEl.style.padding = e.target.value + 'px'; this.savePendingChanges(); }
         });
 
-        document.getElementById('bgColorInput').addEventListener('input', (e) => {
-            if (this.selectedElement) {
-                this.selectedElement.style.backgroundColor = e.target.value;
-            }
-        });
-
-        document.getElementById('textColorInput').addEventListener('input', (e) => {
-            if (this.selectedElement) {
-                this.selectedElement.style.color = e.target.value;
-            }
-        });
-
-        document.getElementById('paddingInput').addEventListener('input', (e) => {
-            if (this.selectedElement) {
-                this.selectedElement.style.padding = e.target.value + 'px';
-            }
+        // Sidebar elements — click to inject into iframe
+        document.querySelectorAll('.element-item').forEach(item => {
+            item.addEventListener('click', () => this.injectElement(item.dataset.type));
         });
     }
 
-    handleDragStart(e) {
-        this.draggedElement = e.target.dataset.type;
-        e.dataTransfer.effectAllowed = 'copy';
-    }
+    // ── Inject a new element into the live iframe ──────────────────────────
+    injectElement(type) {
+        let doc;
+        try { doc = this.iframe.contentWindow.document; } catch(e) { return; }
 
-    handleDragOver(e) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'copy';
-        this.canvas.style.borderColor = '#2bb3ff';
-    }
+        const wrapper = doc.createElement('div');
+        wrapper.style.cssText = 'margin:20px;padding:20px;border:2px dashed rgba(43,179,255,0.4);border-radius:10px;position:relative;z-index:9998;';
 
-    handleDrop(e) {
-        e.preventDefault();
-        this.canvas.style.borderColor = 'transparent';
-
-        if (!this.draggedElement) return;
-
-        const elementId = 'element-' + Date.now();
-        const newElement = this.createElement(this.draggedElement, elementId);
-        
-        this.canvas.appendChild(newElement);
-        
-        this.elements.push({
-            id: elementId,
-            type: this.draggedElement,
-            content: this.getDefaultContent(this.draggedElement),
-            style: {}
-        });
-
-        this.saveElements();
-        this.logAction('Added element', this.draggedElement);
-        this.draggedElement = null;
-    }
-
-    createElement(type, id) {
-        const element = document.createElement('div');
-        element.className = 'editor-element editor-element-' + type;
-        element.id = id;
-        element.draggable = true;
-
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'element-remove-btn';
-        removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
-        removeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.removeElement(id);
-        });
-
-        element.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.selectElement(element);
-        });
-
-        element.addEventListener('dragstart', (e) => {
-            e.stopPropagation();
-            e.dataTransfer.effectAllowed = 'move';
-        });
-
-        element.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            element.style.opacity = '0.7';
-        });
-
-        element.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            element.style.opacity = '1';
-        });
-
-        element.addEventListener('drop', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            element.style.opacity = '1';
-        });
-
-        const content = document.createElement('div');
-        content.className = 'element-content';
-        content.innerHTML = this.getDefaultContent(type);
-        content.contentEditable = false;
-
-        element.appendChild(content);
-        element.appendChild(removeBtn);
-
-        return element;
-    }
-
-    getDefaultContent(type) {
-        const defaults = {
-            'heading': '<h2>Heading</h2>',
-            'paragraph': '<p>Click to edit your text</p>',
-            'button': '<button style="background: #2bb3ff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Click Me</button>',
-            'image': '<div style="background: #0c3a52; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; color: #2bb3ff;"><i class="fas fa-image" style="font-size: 48px;"></i></div>',
-            'section': '<div style="background: #031723; padding: 40px; text-align: center; color: #e6f6ff;">Section Content</div>',
-            'card': '<div style="background: #0c3a52; border: 1px solid #0c3a52; padding: 20px; border-radius: 8px;"><h3 style="margin-top: 0;">Card Title</h3><p>Card content goes here</p></div>',
-            'form': '<form><input type="text" placeholder="Name" style="display: block; margin: 10px 0; padding: 8px;"><input type="email" placeholder="Email" style="display: block; margin: 10px 0; padding: 8px;"><button type="submit" style="padding: 8px 16px; background: #2bb3ff; color: white; border: none; border-radius: 4px;">Submit</button></form>'
+        const templates = {
+            heading:   '<h2 style="color:#e6f6ff;font-family:Bebas Neue,sans-serif;font-size:40px;margin:0;">New Heading</h2>',
+            paragraph: '<p style="color:#e6f6ff;line-height:1.7;margin:0;">Click to edit this paragraph.</p>',
+            button:    '<button style="background:linear-gradient(135deg,#2bb3ff,#00d1ff);color:#031723;padding:13px 32px;border:none;border-radius:9px;font-weight:700;font-size:15px;cursor:pointer;">New Button</button>',
+            image:     '<div style="background:rgba(6,34,51,0.9);border:1px solid rgba(43,179,255,0.2);width:200px;height:160px;display:flex;align-items:center;justify-content:center;border-radius:8px;"><span style="font-size:40px;opacity:0.3;">&#128247;</span></div>',
+            section:   '<div style="padding:60px 40px;text-align:center;background:rgba(6,34,51,0.85);border-radius:10px;"><h2 style="color:#e6f6ff;font-family:Bebas Neue,sans-serif;font-size:42px;margin-bottom:12px;">New Section</h2><p style="color:#e6f6ff;opacity:0.8;">Section content here</p></div>',
+            card:      '<div style="background:rgba(6,34,51,0.9);border:1px solid rgba(43,179,255,0.18);padding:28px;border-radius:12px;max-width:320px;"><h3 style="color:#e6f6ff;margin:0 0 10px;">Card Title</h3><p style="color:#e6f6ff;opacity:0.8;font-size:14px;margin:0;">Card content goes here.</p></div>',
+            form:      '<form><input type="text" placeholder="Your Name" style="display:block;width:100%;margin-bottom:10px;padding:12px 14px;background:rgba(3,23,35,0.85);color:#e6f6ff;border:1px solid rgba(43,179,255,0.25);border-radius:8px;font-size:14px;box-sizing:border-box;"><button type="submit" style="padding:12px 30px;background:linear-gradient(135deg,#2bb3ff,#00d1ff);color:#031723;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Submit</button></form>'
         };
-        return defaults[type] || 'Element';
-    }
 
-    selectElement(element) {
-        if (this.selectedElement) {
-            this.selectedElement.classList.remove('selected');
+        wrapper.innerHTML = (templates[type] || `<p style="color:#e6f6ff;">New ${type}</p>`) +
+            `<button onclick="this.parentNode.remove()" style="position:absolute;top:6px;right:8px;background:rgba(193,67,79,0.85);color:#fff;border:none;border-radius:5px;padding:4px 9px;cursor:pointer;font-size:11px;font-weight:600;">&#10005; Remove</button>`;
+
+        const insertAfter = doc.querySelector('section') || doc.querySelector('nav') || doc.body;
+        if (insertAfter.after) {
+            insertAfter.after(wrapper);
+        } else {
+            insertAfter.parentNode.insertBefore(wrapper, insertAfter.nextSibling);
         }
-
-        this.selectedElement = element;
-        element.classList.add('selected');
-
-        this.updatePropertiesPanel(element);
+        wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        this.showNotification('Added ' + type + ' element', 'success');
+        this.logAction('Added element', type);
     }
 
-    updatePropertiesPanel(element) {
-        const panel = document.getElementById('propertiesPanel');
-        const type = element.className.replace('editor-element editor-element-', '');
-        
-        panel.innerHTML = `
-            <div class="property-item">
-                <label>Element Type</label>
-                <p style="color: #2bb3ff; margin: 5px 0;">${type}</p>
-            </div>
-            <div class="property-item">
-                <label>Content</label>
-                <textarea class="content-editor" style="width: 100%; height: 80px; padding: 8px; background: #0c3a52; color: #e6f6ff; border: 1px solid #0c3a52; border-radius: 4px;">${element.querySelector('.element-content').innerHTML}</textarea>
-                <button class="btn-small" id="updateContentBtn" style="margin-top: 10px; width: 100%;">Update Content</button>
-            </div>
-            <div class="property-item">
-                <label>Position</label>
-                <select style="width: 100%; padding: 8px; background: #0c3a52; color: #e6f6ff; border: 1px solid #0c3a52; border-radius: 4px;">
-                    <option>Static</option>
-                    <option>Relative</option>
-                    <option>Absolute</option>
-                </select>
-            </div>
-        `;
+    // ── Persist changes to localStorage ───────────────────────────────────
+    savePendingChanges() {
+        let doc;
+        try { doc = this.iframe.contentWindow.document; } catch(e) { return; }
 
-        document.getElementById('updateContentBtn').addEventListener('click', () => {
-            const newContent = panel.querySelector('.content-editor').value;
-            element.querySelector('.element-content').innerHTML = newContent;
-            this.saveElements();
-            this.showNotification('Content updated', 'success');
-            this.logAction('Edited element content', type);
+        const changes = {};
+        doc.querySelectorAll('[data-ts-changed="true"]').forEach(el => {
+            const key = el.id || el.className.split(' ').slice(0, 2).join('.') || el.tagName;
+            changes[key] = { innerHTML: el.innerHTML, style: el.getAttribute('style') || '' };
         });
-    }
 
-    removeElement(id) {
-        document.getElementById(id).remove();
-        this.elements = this.elements.filter(e => e.id !== id);
-        this.saveElements();
-        this.selectedElement = null;
-        document.getElementById('propertiesPanel').innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">Select an element to edit</p>';
-        this.logAction('Removed element', id);
-    }
+        localStorage.setItem('trident_editor_changes', JSON.stringify(changes));
 
-    renderElements() {
-        if (this.canvas.innerHTML.includes('canvas-placeholder')) {
-            this.canvas.innerHTML = '';
+        const status = document.getElementById('saveStatus');
+        if (status) {
+            status.classList.add('show');
+            clearTimeout(this._saveTimer);
+            this._saveTimer = setTimeout(() => status.classList.remove('show'), 2000);
         }
-
-        this.elements.forEach(elem => {
-            const element = this.createElement(elem.type, elem.id);
-            if (elem.style) {
-                Object.assign(element.style, elem.style);
-            }
-            this.canvas.appendChild(element);
-        });
     }
 
-    saveElements() {
-        const elements = Array.from(this.canvas.querySelectorAll('.editor-element')).map(elem => ({
-            id: elem.id,
-            type: elem.className.replace('editor-element editor-element-', ''),
-            content: elem.querySelector('.element-content').innerHTML,
-            style: {
-                backgroundColor: elem.style.backgroundColor,
-                color: elem.style.color,
-                fontSize: elem.style.fontSize,
-                padding: elem.style.padding
-            }
-        }));
-
-        localStorage.setItem('trident_page_elements', JSON.stringify(elements));
-        this.elements = elements;
-
-        document.getElementById('saveStatus').classList.add('show');
-        setTimeout(() => {
-            document.getElementById('saveStatus').classList.remove('show');
-        }, 2000);
-    }
-
-    loadElements() {
-        const stored = localStorage.getItem('trident_page_elements');
-        return stored ? JSON.parse(stored) : [];
-    }
-
-    preview() {
-        const modal = document.getElementById('previewModal');
-        const previewContent = document.getElementById('previewContent');
-        
-        previewContent.innerHTML = this.canvas.innerHTML;
-        
-        // Remove editor controls from preview
-        previewContent.querySelectorAll('.element-remove-btn').forEach(btn => btn.remove());
-        previewContent.querySelectorAll('.editor-element').forEach(elem => {
-            elem.style.cursor = 'default';
-            elem.classList.remove('selected');
-        });
-
-        modal.style.display = 'flex';
-        this.logAction('Previewed changes', 'Opened preview');
-    }
-
+    // ── Publish ────────────────────────────────────────────────────────────
     publish() {
-        if (confirm('Publish changes to live website?')) {
-            this.saveElements();
-            localStorage.setItem('trident_page_published', new Date().toISOString());
-            this.logAction('Published changes', 'Website updated');
-            this.showNotification('Website published successfully!', 'success');
-
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1500);
-        }
+        this.savePendingChanges();
+        localStorage.setItem('trident_page_published', new Date().toISOString());
+        this.logAction('Published changes', 'Website updated');
+        this.showNotification('Changes published! Redirecting...', 'success');
+        setTimeout(() => { window.location.href = 'index.html'; }, 1600);
     }
 
+    // ── Helpers ────────────────────────────────────────────────────────────
     logAction(action, details) {
         let logs = JSON.parse(localStorage.getItem('trident_audit_logs') || '[]');
-        logs.push({
-            timestamp: new Date().toISOString(),
-            user: this.currentUser.email,
-            action,
-            details
-        });
+        logs.push({ timestamp: new Date().toISOString(), user: this.currentUser.email, action, details });
         localStorage.setItem('trident_audit_logs', JSON.stringify(logs));
     }
 
     showNotification(message, type = 'info') {
-        const notification = document.getElementById('notification');
-        if (!notification) return;
-
-        notification.textContent = message;
-        notification.className = `notification notification-${type} show`;
-
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 3000);
+        const n = document.getElementById('notification');
+        if (!n) return;
+        n.textContent = message;
+        n.className = `notification notification-${type} show`;
+        setTimeout(() => n.classList.remove('show'), 3000);
     }
+
+    // Backward compat stubs
+    loadElements()   { return []; }
+    renderElements() {}
+    saveElements()   {}
 }
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-    new WebsiteEditor();
-});
+document.addEventListener('DOMContentLoaded', () => { new WebsiteEditor(); });

@@ -60,6 +60,40 @@ class AdminPanelManager {
             this.saveSettings();
         });
 
+        // Save users
+        document.getElementById('saveUsersBtn').addEventListener('click', () => {
+            localStorage.setItem('trident_users', JSON.stringify(this.users));
+            this.logAction('Saved user list', 'Manual save');
+            this.showNotification('User changes saved', 'success');
+            this.setSaveTime('usersSaveTime');
+        });
+
+        // Refresh analytics
+        document.getElementById('saveAnalyticsBtn').addEventListener('click', () => {
+            this.showNotification('Analytics refreshed', 'success');
+            this.setSaveTime('analyticsSaveTime');
+        });
+
+        // Refresh visits chart
+        document.getElementById('refreshVisitsBtn').addEventListener('click', () => {
+            this.initializeChart();
+            this.showNotification('Visit data refreshed', 'success');
+            this.setSaveTime('visitsSaveTime');
+        });
+
+        // Export audit log
+        document.getElementById('exportAuditBtn').addEventListener('click', () => {
+            const data = JSON.stringify(this.auditLogs, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'audit-log-' + new Date().toISOString().slice(0,10) + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            this.showNotification('Audit log exported', 'success');
+        });
+
         // Update admin name
         document.getElementById('adminName').textContent = this.currentUser.username;
     }
@@ -319,20 +353,51 @@ class AdminPanelManager {
             enableAnalytics: document.getElementById('enableAnalytics').checked
         };
 
+        // Collect social links
+        const socials = {
+            discord:   document.getElementById('socialDiscord').value.trim(),
+            youtube:   document.getElementById('socialYoutube').value.trim(),
+            twitch:    document.getElementById('socialTwitch').value.trim(),
+            twitter:   document.getElementById('socialTwitter').value.trim(),
+            instagram: document.getElementById('socialInstagram').value.trim(),
+            tiktok:    document.getElementById('socialTiktok').value.trim()
+        };
+
+        // Also update discord link in settings from socials if provided
+        if (socials.discord) settings.discordLink = socials.discord;
+
         localStorage.setItem('trident_settings', JSON.stringify(settings));
-        this.logAction('Updated system settings', 'Multiple settings changed');
-        this.showNotification('Settings saved successfully', 'success');
+        localStorage.setItem('trident_social_links', JSON.stringify(socials));
+
+        // Persist site content for index.html to pick up
+        localStorage.setItem('trident_site_content', JSON.stringify({
+            title:    settings.siteTitle,
+            subtitle: settings.siteSubtitle
+        }));
+
+        this.logAction('Updated system settings', 'Settings & social links saved');
+        this.showNotification('All settings saved — live website updated!', 'success');
+        this.setSaveTime('settingsSaveTime');
     }
 
     loadSettings() {
         const settings = JSON.parse(localStorage.getItem('trident_settings') || '{}');
-        if (settings.siteTitle) document.getElementById('siteTitleInput').value = settings.siteTitle;
+        if (settings.siteTitle)    document.getElementById('siteTitleInput').value    = settings.siteTitle;
         if (settings.siteSubtitle) document.getElementById('siteSubtitleInput').value = settings.siteSubtitle;
         if (settings.contactEmail) document.getElementById('contactEmailInput').value = settings.contactEmail;
-        if (settings.discordLink) document.getElementById('discordLinkInput').value = settings.discordLink;
+        if (settings.discordLink)  document.getElementById('discordLinkInput').value  = settings.discordLink;
         document.getElementById('enableNotifications').checked = settings.enableNotifications !== false;
-        document.getElementById('maintenanceMode').checked = settings.maintenanceMode || false;
-        document.getElementById('enableAnalytics').checked = settings.enableAnalytics !== false;
+        document.getElementById('maintenanceMode').checked     = settings.maintenanceMode || false;
+        document.getElementById('enableAnalytics').checked     = settings.enableAnalytics !== false;
+
+        // Load social links
+        const socials = JSON.parse(localStorage.getItem('trident_social_links') || '{}');
+        if (socials.discord)   document.getElementById('socialDiscord').value   = socials.discord;
+        if (socials.youtube)   document.getElementById('socialYoutube').value   = socials.youtube;
+        if (socials.twitch)    document.getElementById('socialTwitch').value    = socials.twitch;
+        if (socials.twitter)   document.getElementById('socialTwitter').value   = socials.twitter;
+        if (socials.instagram) document.getElementById('socialInstagram').value = socials.instagram;
+        if (socials.tiktok)    document.getElementById('socialTiktok').value    = socials.tiktok;
     }
 
     logAction(action, details) {
@@ -356,6 +421,11 @@ class AdminPanelManager {
         setTimeout(() => {
             notification.classList.remove('show');
         }, 3000);
+    }
+
+    setSaveTime(elementId) {
+        const el = document.getElementById(elementId);
+        if (el) el.textContent = 'Last saved: ' + new Date().toLocaleTimeString();
     }
 }
 

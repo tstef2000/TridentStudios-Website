@@ -254,6 +254,18 @@ body {
     }
 }
 
+/* Card scroll-in animation (distinct from hero slideInUp) */
+@keyframes cardSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .hero-title {
     font-size: clamp(56px, 10vw, 100px);
     font-weight: 900;
@@ -2556,6 +2568,24 @@ body {
     color: var(--text-light);
 }
 
+/* Section save bar (shown at bottom of each admin section) */
+.section-save-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 32px;
+    padding: 16px 20px;
+    background: rgba(6, 34, 51, 0.6);
+    border: 1px solid rgba(43, 179, 255, 0.12);
+    border-radius: 10px;
+}
+
+.save-timestamp {
+    font-size: 12px;
+    color: var(--text-light);
+    opacity: 0.5;
+}
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -3062,10 +3092,94 @@ body {
 }
 
 .editor-canvas {
-    background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
-    overflow-y: auto;
-    padding: 40px;
+    background: var(--bg-darker);
+    overflow: hidden;
     position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Editor preview bar (above iframe) */
+.editor-preview-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: rgba(1, 12, 20, 0.98);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.preview-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+.preview-file-name {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 500;
+}
+
+.preview-mode-badge {
+    background: rgba(43, 179, 255, 0.15);
+    border: 1px solid rgba(43, 179, 255, 0.35);
+    color: var(--primary-color);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.preview-bar-right {
+    display: flex;
+    gap: 6px;
+}
+
+.preview-device-btn {
+    background: rgba(43, 179, 255, 0.08);
+    border: 1px solid rgba(43, 179, 255, 0.2);
+    color: var(--text-light);
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.preview-device-btn.active,
+.preview-device-btn:hover {
+    background: rgba(43, 179, 255, 0.22);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.iframe-wrapper {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.website-preview-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    transition: width 0.3s ease;
+}
+
+.website-preview-frame.mobile-view {
+    width: 390px;
+    margin: 0 auto;
+    display: block;
+    box-shadow: 0 0 0 16px rgba(12, 58, 82, 0.6), 0 0 0 17px var(--border-color);
+    border-radius: 36px;
 }
 
 .canvas-content {

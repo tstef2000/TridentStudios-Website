@@ -20,6 +20,28 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.hash = '';
     };
 
+    // Replay any autoplay videos when tab becomes visible again
+    // (browsers may pause autoplay videos when tab is hidden)
+    function replayAutoplayVideos() {
+        document.querySelectorAll('video[autoplay]').forEach(video => {
+            if (video.paused && !video.ended) {
+                video.play().catch(() => {});
+            }
+        });
+    }
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            replayAutoplayVideos();
+        }
+    });
+
+    // pageshow fires when returning via browser back button
+    window.addEventListener('pageshow', (e) => {
+        // e.persisted = page was restored from bfcache
+        replayAutoplayVideos();
+    });
+
     // Initialize all systems
     setupNavigation();
     setupScrollAnimations();
@@ -101,7 +123,7 @@ function setupScrollAnimations() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.style.animation = 'slideInUp 0.8s ease forwards';
+                entry.target.style.animation = 'cardSlideIn 0.8s ease forwards';
                 observer.unobserve(entry.target);
             }
         });

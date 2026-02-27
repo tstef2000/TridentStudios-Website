@@ -349,10 +349,44 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 Trident Studios. All rights reserved. &nbsp;|&nbsp; Rust is a trademark of Facepunch Studios.</p>
+            <p>&copy; 2026 Trident Studios. All rights reserved. &nbsp;|&nbsp; All work is a trademark of Trident Studios.</p>
         </div>
     </footer>
 
     <script src="script.js"></script>
+
+    <!-- Apply saved settings from Admin Panel ─── -->
+    <script>
+    (function applyAdminSettings() {
+        // Social links → hero social icons
+        var socials = {};
+        try { socials = JSON.parse(localStorage.getItem('trident_social_links') || '{}'); } catch(e) {}
+        var socialMap = {
+            discord:   '.hero-socials a[title="Discord"]',
+            youtube:   '.hero-socials a[title="YouTube"]',
+            twitch:    '.hero-socials a[title="Twitch"]',
+            twitter:   '.hero-socials a[title="Twitter"]'
+        };
+        Object.keys(socialMap).forEach(function(key) {
+            if (socials[key]) {
+                var el = document.querySelector(socialMap[key]);
+                if (el) el.href = socials[key];
+            }
+        });
+
+        // Site title & subtitle from admin System Settings
+        var content = {};
+        try { content = JSON.parse(localStorage.getItem('trident_site_content') || '{}'); } catch(e) {}
+        if (content.title) {
+            var titleEl = document.querySelector('.hero-title');
+            if (titleEl) titleEl.textContent = content.title;
+            document.title = content.title + ' - Rust Content Creation';
+        }
+        if (content.subtitle) {
+            var subtitleEl = document.querySelector('.hero-subtitle');
+            if (subtitleEl) subtitleEl.textContent = content.subtitle;
+        }
+    })();
+    </script>
 </body>
 </html>

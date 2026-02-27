@@ -162,6 +162,13 @@
                     </div>
                     <div id="usersTableBody"></div>
                 </div>
+
+                <div class="section-save-bar">
+                    <button class="btn-primary" id="saveUsersBtn">
+                        <i class="fas fa-save"></i> Save User Changes
+                    </button>
+                    <span class="save-timestamp" id="usersSaveTime"></span>
+                </div>
             </section>
 
             <!-- Analytics Section -->
@@ -218,9 +225,14 @@
                                 <span>Admin Logins</span>
                                 <strong>89 times</strong>
                             </div>
-                            <div class="stat-item">
-                                <span>Changes Made</span>
-                                <strong>234 edits</strong>
+
+                <div class="section-save-bar">
+                    <button class="btn-primary" id="saveAnalyticsBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh Analytics
+                    </button>
+                    <span class="save-timestamp" id="analyticsSaveTime"></span>
+                </div>
+            </section4 edits</strong>
                             </div>
                         </div>
                     </div>
@@ -238,6 +250,13 @@
                     <div class="chart-info">
                         <p>Hover over the graph to see detailed statistics for each day</p>
                     </div>
+
+                <div class="section-save-bar">
+                    <button class="btn-primary" id="refreshVisitsBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh Visit Data
+                    </button>
+                    <span class="save-timestamp" id="visitsSaveTime"></span>
+                </div>
                     <div id="chartHoverInfo" class="chart-hover-info" style="display:none;">
                         <p><strong id="hoverDate">Date</strong></p>
                         <p>Visits: <strong id="hoverVisits">0</strong></p>
@@ -258,6 +277,13 @@
 
                 <div class="audit-table">
                     <div class="table-header">
+
+                <div class="section-save-bar">
+                    <button class="btn-secondary" id="exportAuditBtn">
+                        <i class="fas fa-download"></i> Export Log
+                    </button>
+                    <span class="save-timestamp" id="auditSaveTime"></span>
+                </div>
                         <div class="table-cell">Timestamp</div>
                         <div class="table-cell">User</div>
                         <div class="table-cell">Action</div>
@@ -325,11 +351,64 @@
                                 <span>Analytics Tracking</span>
                             </label>
                         </div>
-
-                        <button class="btn-primary" style="margin-top: 20px;" id="saveSettingsBtn">
-                            <i class="fas fa-save"></i> Save Settings
-                        </button>
                     </div>
+
+                    <!-- Social Media Links -->
+                    <div class="settings-card" style="grid-column: 1 / -1;">
+                        <h3 style="color: var(--text-light); margin-bottom: 6px; font-size: 17px;">
+                            <i class="fas fa-share-alt" style="color: var(--primary-color); margin-right: 8px;"></i>
+                            Social Media Links
+                        </h3>
+                        <p style="font-size: 13px; opacity: 0.55; margin-bottom: 20px;">
+                            These links automatically apply to the social buttons on the live website.
+                        </p>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+                            <div class="setting-item">
+                                <label>
+                                    <span><i class="fab fa-discord" style="color: #5865F2; margin-right: 6px;"></i> Discord Invite</span>
+                                    <input type="url" id="socialDiscord" placeholder="https://discord.gg/...">
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <span><i class="fab fa-youtube" style="color: #FF0000; margin-right: 6px;"></i> YouTube Channel</span>
+                                    <input type="url" id="socialYoutube" placeholder="https://youtube.com/@...">
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <span><i class="fab fa-twitch" style="color: #9146FF; margin-right: 6px;"></i> Twitch Channel</span>
+                                    <input type="url" id="socialTwitch" placeholder="https://twitch.tv/...">
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <span><i class="fab fa-twitter" style="color: #1DA1F2; margin-right: 6px;"></i> Twitter / X</span>
+                                    <input type="url" id="socialTwitter" placeholder="https://twitter.com/...">
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <span><i class="fab fa-instagram" style="color: #E1306C; margin-right: 6px;"></i> Instagram</span>
+                                    <input type="url" id="socialInstagram" placeholder="https://instagram.com/...">
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <span><i class="fab fa-tiktok" style="color: #69C9D0; margin-right: 6px;"></i> TikTok</span>
+                                    <input type="url" id="socialTiktok" placeholder="https://tiktok.com/@...">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-save-bar">
+                    <button class="btn-primary" id="saveSettingsBtn">
+                        <i class="fas fa-save"></i> Save All Settings
+                    </button>
+                    <span class="save-timestamp" id="settingsSaveTime"></span>
                 </div>
             </section>
         </main>
