@@ -50,11 +50,13 @@ TridentStudios-Website/
 
 ## 🚀 How to Use
 
+> **No server-side language required!** This is a pure static website built with HTML, CSS, and JavaScript only. You do **not** need Node.js, Python, PHP, or any other backend language to host it. Any static file host will work.
+
 1. **Open in Browser**
    - Simply open `index.html` in your web browser
    - No build process or dependencies required
 
-2. **Live Server (Recommended)**
+2. **Live Server (Recommended for Development)**
    - Use VS Code Live Server extension
    - Or use Python: `python -m http.server 8000`
    - Then navigate to `http://localhost:8000`
@@ -133,8 +135,8 @@ Modify service descriptions and features in the services grid
 
 2. **Deploy**
    - Upload files to your hosting service
-   - Works with any static hosting (Netlify, Vercel, GitHub Pages, etc.)
-   - No backend required
+   - Works with any **static hosting** (Netlify, Vercel, GitHub Pages, etc.)
+   - **No backend language required** — select "Static" or "HTML" if a host asks for a framework/language
 
 3. **Optimize**
    - Add actual portfolio images
