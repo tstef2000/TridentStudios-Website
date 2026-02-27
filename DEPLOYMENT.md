@@ -1,5 +1,7 @@
 # Deployment Guide for Trident Studios Website
 
+> **No server-side language needed!** This is a pure static HTML/CSS/JavaScript site. You do **not** need Node.js, PHP, Python, or any other backend language to run or host it. If a hosting service asks you to pick a language or framework, choose **"Static"** or **"HTML"** (or leave it blank — they all work).
+
 ## Quick Start - Local Development
 
 ### Option 1: Direct Browser
