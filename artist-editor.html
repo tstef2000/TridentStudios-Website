@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist Card Editor – Trident Studios</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="artist-editor-body">
+
+    <div class="artist-editor-page">
+        <!-- Background -->
+        <div class="dashboard-background">
+            <video class="dashboard-bg-video" autoplay muted loop playsinline>
+                <source src="videos/hero-bg.mp4" type="video/mp4">
+            </video>
+            <div class="dashboard-overlay"></div>
+        </div>
+
+        <div class="artist-editor-container">
+
+            <!-- Header -->
+            <header class="artist-editor-header">
+                <div class="artist-editor-header-left">
+                    <img src="images/trident-logo.png" alt="Trident Studios" class="artist-editor-logo">
+                    <div>
+                        <h1>Artist Card Editor</h1>
+                        <p>Personalize your public artist profile on the Trident Studios website</p>
+                    </div>
+                </div>
+                <div class="artist-editor-header-right">
+                    <a href="artists.html" class="btn-secondary">
+                        <i class="fas fa-eye"></i> View Live Card
+                    </a>
+                    <a href="dashboard.html" class="btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Dashboard
+                    </a>
+                </div>
+            </header>
+
+            <div class="artist-editor-layout">
+
+                <!-- Edit Panel -->
+                <div class="artist-edit-panel">
+
+                    <div class="artist-edit-section">
+                        <h3><i class="fas fa-user" style="color:var(--primary-color);margin-right:8px;"></i> Display Info</h3>
+
+                        <div class="profile-field">
+                            <label>Artist Name</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-signature"></i></span>
+                                <input type="text" id="artistName" placeholder="Your artist name" maxlength="40">
+                            </div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>Specialty / Role Title</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-paint-brush"></i></span>
+                                <input type="text" id="artistRoleTitle" placeholder="e.g. Logo Designer & Branding" maxlength="60">
+                            </div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>Discord Tag</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fab fa-discord"></i></span>
+                                <input type="text" id="artistDiscordTag" placeholder="@YourTag" maxlength="40">
+                            </div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>Bio</label>
+                            <textarea id="artistBio" placeholder="Tell visitors about your skills and specialties..." rows="4" maxlength="300" style="width:100%;padding:12px 14px;background:rgba(3,23,35,0.85);color:var(--text-light);border:1px solid rgba(43,179,255,0.2);border-radius:8px;font-family:inherit;font-size:14px;resize:vertical;box-sizing:border-box;"></textarea>
+                            <small class="profile-hint"><span id="bioCharCount">0</span>/300 characters</small>
+                        </div>
+                    </div>
+
+                    <div class="artist-edit-section">
+                        <h3><i class="fas fa-image" style="color:var(--primary-color);margin-right:8px;"></i> Profile Picture</h3>
+
+                        <div class="profile-field">
+                            <label>Image URL</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-link"></i></span>
+                                <input type="url" id="artistAvatarUrl" placeholder="https://i.imgur.com/yourimage.png">
+                            </div>
+                        </div>
+
+                        <div style="display:flex;align-items:center;gap:16px;margin-top:12px;">
+                            <label class="profile-upload-btn">
+                                <i class="fas fa-upload"></i> Upload Image
+                                <input type="file" id="artistAvatarFile" accept="image/*" style="display:none;">
+                            </label>
+                            <button class="btn-secondary" id="previewArtistAvatarBtn">
+                                <i class="fas fa-eye"></i> Preview
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="artist-edit-section">
+                        <h3><i class="fas fa-share-alt" style="color:var(--primary-color);margin-right:8px;"></i> Social Links</h3>
+
+                        <div class="profile-field">
+                            <label><i class="fab fa-discord" style="color:#5865F2;margin-right:6px;"></i> Discord Invite / Profile</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fab fa-discord"></i></span>
+                                <input type="url" id="artistSocialDiscord" placeholder="https://discord.gg/...">
+                            </div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label><i class="fab fa-youtube" style="color:#FF0000;margin-right:6px;"></i> YouTube Channel</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fab fa-youtube"></i></span>
+                                <input type="url" id="artistSocialYoutube" placeholder="https://youtube.com/@...">
+                            </div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label><i class="fab fa-twitch" style="color:#9146FF;margin-right:6px;"></i> Twitch Channel</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fab fa-twitch"></i></span>
+                                <input type="url" id="artistSocialTwitch" placeholder="https://twitch.tv/...">
+                            </div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label><i class="fab fa-twitter" style="color:#1DA1F2;margin-right:6px;"></i> Twitter / X</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fab fa-twitter"></i></span>
+                                <input type="url" id="artistSocialTwitter" placeholder="https://twitter.com/...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="auth-submit-btn" id="saveArtistCardBtn" style="max-width:280px;margin-top:8px;">
+                        <span>Save My Artist Card</span>
+                        <i class="fas fa-save"></i>
+                    </button>
+                </div>
+
+                <!-- Live Preview Panel -->
+                <div class="artist-preview-panel">
+                    <h3 style="font-size:14px;opacity:0.6;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">Live Preview</h3>
+
+                    <div class="artist-card" id="artistCardPreview">
+                        <div class="artist-image" id="previewAvatarEl">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="artist-info">
+                            <h2 class="artist-name" id="previewName">Artist Name</h2>
+                            <p class="artist-role" id="previewRole">Specialty</p>
+                            <p class="artist-discord" id="previewDiscordTag">@DiscordTag</p>
+                            <p class="artist-bio" id="previewBio">Your bio will appear here.</p>
+                            <div class="artist-links" id="previewLinks">
+                                <a href="#" class="artist-link" id="previewLinkDiscord"><i class="fab fa-discord"></i></a>
+                                <a href="#" class="artist-link" id="previewLinkYoutube"><i class="fab fa-youtube"></i></a>
+                                <a href="#" class="artist-link" id="previewLinkTwitch"><i class="fab fa-twitch"></i></a>
+                                <a href="#" class="artist-link" id="previewLinkTwitter"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p style="font-size:12px;opacity:0.4;margin-top:20px;text-align:center;">
+                        This is how your card appears to visitors on the Artists page.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+    (function() {
+        const STORE_CURRENT = 'trident_currentUser';
+        const STORE_CARDS   = 'trident_artist_cards';
+
+        function getUser()  { try { return JSON.parse(localStorage.getItem(STORE_CURRENT)); } catch(e) { return null; } }
+        function getCards() { try { return JSON.parse(localStorage.getItem(STORE_CARDS)) || {}; } catch(e) { return {}; } }
+
+        function notify(msg, type = 'success') {
+            const n = document.getElementById('notification');
+            if (!n) return;
+            n.textContent = msg;
+            n.className   = `notification notification-${type} show`;
+            setTimeout(() => n.classList.remove('show'), 3500);
+        }
+
+        const user = getUser();
+        if (!user || (user.role !== 'artist' && user.role !== 'admin')) {
+            window.location.href = 'dashboard.html';
+            return;
+        }
+
+        // Artist card ID: admins use card "admin", artists use their assigned card
+        const cardId = user.role === 'admin' ? (user.artistCardId || '1') : (user.artistCardId || '1');
+        const cards  = getCards();
+        const saved  = cards[cardId] || {};
+
+        // ── Pre-fill fields ──────────────────────────────────────────────
+        const $ = id => document.getElementById(id);
+        $('artistName').value           = saved.name       || '';
+        $('artistRoleTitle').value      = saved.roleTitle  || '';
+        $('artistDiscordTag').value     = saved.discordTag || '';
+        $('artistBio').value            = saved.bio        || '';
+        $('artistAvatarUrl').value      = saved.avatarUrl  || '';
+        $('artistSocialDiscord').value  = (saved.socials && saved.socials.discord) || '';
+        $('artistSocialYoutube').value  = (saved.socials && saved.socials.youtube) || '';
+        $('artistSocialTwitch').value   = (saved.socials && saved.socials.twitch)  || '';
+        $('artistSocialTwitter').value  = (saved.socials && saved.socials.twitter) || '';
+
+        // ── Bio char count ────────────────────────────────────────────────
+        $('artistBio').addEventListener('input', () => {
+            $('bioCharCount').textContent = $('artistBio').value.length;
+        });
+        $('bioCharCount').textContent = $('artistBio').value.length;
+
+        // ── Live preview update ──────────────────────────────────────────
+        function updatePreview() {
+            const name       = $('artistName').value       || 'Artist Name';
+            const role       = $('artistRoleTitle').value  || 'Specialty';
+            const discordTag = $('artistDiscordTag').value || '@DiscordTag';
+            const bio        = $('artistBio').value        || 'Your bio will appear here.';
+            const avatarUrl  = $('artistAvatarUrl').value.trim();
+
+            $('previewName').textContent        = name;
+            $('previewRole').textContent        = role;
+            $('previewDiscordTag').textContent  = discordTag;
+            $('previewBio').textContent         = bio;
+
+            const avatarEl = $('previewAvatarEl');
+            if (avatarUrl) {
+                avatarEl.innerHTML = `<img src="${avatarUrl}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-user-circle\\'></i>'">`;
+            } else {
+                avatarEl.innerHTML = '<i class="fas fa-user-circle"></i>';
+            }
+
+            // Social link visibility
+            const disc = $('artistSocialDiscord').value.trim();
+            const yt   = $('artistSocialYoutube').value.trim();
+            const twit = $('artistSocialTwitch').value.trim();
+            const tw   = $('artistSocialTwitter').value.trim();
+
+            $('previewLinkDiscord').style.display = disc ? '' : 'none';
+            $('previewLinkYoutube').style.display = yt   ? '' : 'none';
+            $('previewLinkTwitch').style.display  = twit ? '' : 'none';
+            $('previewLinkTwitter').style.display = tw   ? '' : 'none';
+
+            if (disc) $('previewLinkDiscord').href = disc;
+            if (yt)   $('previewLinkYoutube').href = yt;
+            if (twit) $('previewLinkTwitch').href  = twit;
+            if (tw)   $('previewLinkTwitter').href = tw;
+        }
+
+        // Update preview on every keypress
+        ['artistName','artistRoleTitle','artistDiscordTag','artistBio',
+         'artistAvatarUrl','artistSocialDiscord','artistSocialYoutube',
+         'artistSocialTwitch','artistSocialTwitter'].forEach(id => {
+            $(id).addEventListener('input', updatePreview);
+        });
+
+        updatePreview(); // initial render
+
+        // ── Avatar preview button ─────────────────────────────────────────
+        $('previewArtistAvatarBtn').addEventListener('click', updatePreview);
+
+        // ── File upload ──────────────────────────────────────────────────
+        $('artistAvatarFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file || file.size > 2 * 1024 * 1024) { notify('Image must be under 2MB', 'error'); return; }
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                $('artistAvatarUrl').value = ev.target.result;
+                updatePreview();
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // ── Save ─────────────────────────────────────────────────────────
+        $('saveArtistCardBtn').addEventListener('click', () => {
+            const data = {
+                name:       $('artistName').value.trim(),
+                roleTitle:  $('artistRoleTitle').value.trim(),
+                discordTag: $('artistDiscordTag').value.trim(),
+                bio:        $('artistBio').value.trim(),
+                avatarUrl:  $('artistAvatarUrl').value.trim(),
+                socials: {
+                    discord: $('artistSocialDiscord').value.trim(),
+                    youtube: $('artistSocialYoutube').value.trim(),
+                    twitch:  $('artistSocialTwitch').value.trim(),
+                    twitter: $('artistSocialTwitter').value.trim()
+                }
+            };
+
+            const updatedCards = getCards();
+            updatedCards[cardId] = data;
+            localStorage.setItem(STORE_CARDS, JSON.stringify(updatedCards));
+
+            // Also update the user's own username to match artist name if not set
+            if (!user.username && data.name) {
+                user.username = data.name;
+                localStorage.setItem(STORE_CURRENT, JSON.stringify(user));
+            }
+
+            notify('Artist card saved! Changes are live on the Artists page.');
+        });
+    })();
+    </script>
+</body>
+</html>

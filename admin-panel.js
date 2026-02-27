@@ -157,9 +157,12 @@ class AdminPanelManager {
                 <div class="table-cell password">${passwordDisplay}</div>
                 <div class="table-cell role-cell">
                     <select class="role-select" data-user-id="${user.id}">
+                        <option value="viewer" ${user.role === 'viewer' ? 'selected' : ''}>Viewer</option>
+                        <option value="artist" ${user.role === 'artist' ? 'selected' : ''}>Artist</option>
                         <option value="website-editor" ${user.role === 'website-editor' ? 'selected' : ''}>Website Editor</option>
                         <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
                     </select>
+                    ${user.role === 'artist' ? `<select class="card-select" data-user-id="${user.id}" style="margin-top:4px;font-size:12px;background:rgba(3,23,35,0.9);border:1px solid rgba(43,179,255,0.2);color:var(--text-light);padding:4px 8px;border-radius:6px;"><option value="1" ${user.artistCardId==='1'?'selected':''}>Card 1</option><option value="2" ${user.artistCardId==='2'?'selected':''}>Card 2</option><option value="3" ${user.artistCardId==='3'?'selected':''}>Card 3</option><option value="4" ${user.artistCardId==='4'?'selected':''}>Card 4</option></select>` : ''}
                 </div>
                 <div class="table-cell">${new Date(user.createdAt).toLocaleDateString()}</div>
                 <div class="table-cell actions">
@@ -173,7 +176,21 @@ class AdminPanelManager {
             const roleSelect = row.querySelector('.role-select');
             roleSelect.addEventListener('change', (e) => {
                 this.updateUserRole(user.id, e.target.value);
+                this.renderUsers(); // re-render to show/hide card selector
             });
+            // Card assignment listener (for artist role)
+            const cardSelect = row.querySelector('.card-select');
+            if (cardSelect) {
+                cardSelect.addEventListener('change', (e) => {
+                    const u = this.users.find(x => x.id === user.id);
+                    if (u) {
+                        u.artistCardId = e.target.value;
+                        localStorage.setItem('trident_users', JSON.stringify(this.users));
+                        this.logAction('Assigned artist card', `${u.email}: card ${e.target.value}`);
+                        this.showNotification(`Artist card ${e.target.value} assigned`, 'success');
+                    }
+                });
+            }
 
             // Delete button
             row.querySelector('.btn-delete').addEventListener('click', () => {
@@ -213,6 +230,7 @@ class AdminPanelManager {
         const username = document.getElementById('newUserUsername').value;
         const password = document.getElementById('newUserPassword').value;
         const role = document.getElementById('newUserRole').value;
+        const artistCardId = role === 'artist' ? (document.getElementById('newUserArtistCard').value || '1') : null;
 
         if (this.users.find(u => u.email === email)) {
             this.showNotification('User already exists', 'error');
@@ -225,6 +243,7 @@ class AdminPanelManager {
             username,
             password,
             role,
+            artistCardId: artistCardId || null,
             createdAt: new Date().toISOString(),
             lastLogin: null
         };

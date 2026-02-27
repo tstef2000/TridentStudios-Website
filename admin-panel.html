@@ -436,9 +436,20 @@
                 </div>
                 <div class="form-group">
                     <label>Role</label>
-                    <select id="newUserRole" required>
+                    <select id="newUserRole" required onchange="document.getElementById('artistCardField').style.display=this.value==='artist'?'block':'none'">
+                        <option value="viewer">Viewer</option>
+                        <option value="artist">Artist</option>
                         <option value="website-editor">Website Editor</option>
                         <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group" id="artistCardField" style="display:none;">
+                    <label>Assign Artist Card</label>
+                    <select id="newUserArtistCard">
+                        <option value="1">Card 1 — Artist One</option>
+                        <option value="2">Card 2 — Artist Two</option>
+                        <option value="3">Card 3 — Artist Three</option>
+                        <option value="4">Card 4 — Artist Four</option>
                     </select>
                 </div>
                 <button type="submit" class="btn-primary">Add User</button>

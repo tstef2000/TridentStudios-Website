@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile – Trident Studios</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="profile-body">
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="images/trident-logo.png" alt="Trident Studios" class="logo-img">
+                <span>TRIDENT STUDIOS</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li><a href="artists.html" class="nav-link">Artists</a></li>
+                <li><a href="socials.html" class="nav-link">Socials</a></li>
+            </ul>
+            <button class="login-btn" id="loginBtn" title="Login">
+                <i class="fas fa-sign-in-alt"></i><span>Login</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="profile-page">
+        <div class="profile-container">
+
+            <!-- Sidebar -->
+            <aside class="profile-sidebar">
+                <div class="profile-avatar-wrap">
+                    <div class="profile-avatar" id="profileAvatarDisplay">U</div>
+                    <label class="profile-avatar-edit" title="Change avatar">
+                        <i class="fas fa-camera"></i>
+                        <input type="file" id="avatarFileInput" accept="image/*" style="display:none;">
+                    </label>
+                </div>
+                <h2 id="sidebarUsername">Username</h2>
+                <p class="profile-role-badge" id="sidebarRole">Member</p>
+                <p class="profile-joined" id="sidebarJoined"></p>
+                <p class="profile-provider-badge" id="sidebarProvider" style="display:none;"></p>
+
+                <nav class="profile-nav">
+                    <button class="profile-nav-btn active" data-section="info">
+                        <i class="fas fa-user"></i> Account Info
+                    </button>
+                    <button class="profile-nav-btn" data-section="avatar">
+                        <i class="fas fa-image"></i> Profile Picture
+                    </button>
+                    <button class="profile-nav-btn" data-section="security">
+                        <i class="fas fa-shield-alt"></i> Security
+                    </button>
+                    <button class="profile-nav-btn profile-nav-logout" id="profileLogoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Sign Out
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="profile-main">
+
+                <!-- Account Info Section -->
+                <section class="profile-section active" id="section-info">
+                    <h3 class="profile-section-title">Account Information</h3>
+                    <p class="profile-section-desc">Update your public display name and bio.</p>
+
+                    <div class="profile-form">
+                        <div class="profile-field">
+                            <label>Display Name</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-user"></i></span>
+                                <input type="text" id="editUsername" placeholder="Your display name" maxlength="32">
+                            </div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>Email Address</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                                <input type="email" id="editEmail" placeholder="your@email.com">
+                            </div>
+                            <small class="profile-hint">Used for login. Be careful changing this.</small>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>Bio <span style="opacity:0.5;font-size:12px;">(optional)</span></label>
+                            <textarea id="editBio" placeholder="Tell the community a little about yourself..." rows="3" maxlength="200" style="width:100%;padding:12px 14px;background:rgba(3,23,35,0.85);color:var(--text-light);border:1px solid rgba(43,179,255,0.2);border-radius:8px;font-family:inherit;font-size:14px;resize:vertical;"></textarea>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>Discord Tag <span style="opacity:0.5;font-size:12px;">(optional)</span></label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fab fa-discord"></i></span>
+                                <input type="text" id="editDiscordTag" placeholder="@YourName" maxlength="40">
+                            </div>
+                        </div>
+
+                        <button class="auth-submit-btn" id="saveInfoBtn" style="max-width:220px;">
+                            <span>Save Changes</span>
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Avatar Section -->
+                <section class="profile-section" id="section-avatar">
+                    <h3 class="profile-section-title">Profile Picture</h3>
+                    <p class="profile-section-desc">Upload an image or paste a URL for your avatar.</p>
+
+                    <div class="profile-avatar-preview-row">
+                        <div class="profile-avatar large" id="avatarPreviewLarge">U</div>
+                        <div class="profile-avatar-options">
+                            <div class="profile-field">
+                                <label>Image URL</label>
+                                <div class="input-group">
+                                    <span class="input-icon"><i class="fas fa-link"></i></span>
+                                    <input type="url" id="avatarUrlInput" placeholder="https://i.imgur.com/yourimage.png">
+                                </div>
+                                <button class="btn-secondary" id="previewAvatarUrlBtn" style="margin-top:10px;">
+                                    <i class="fas fa-eye"></i> Preview URL
+                                </button>
+                            </div>
+
+                            <div class="profile-field" style="margin-top:20px;">
+                                <label>Upload from Device</label>
+                                <label class="profile-upload-btn">
+                                    <i class="fas fa-upload"></i> Choose Image (max 2MB)
+                                    <input type="file" id="avatarUploadInput" accept="image/*" style="display:none;">
+                                </label>
+                            </div>
+
+                            <button class="auth-submit-btn" id="saveAvatarBtn" style="max-width:220px; margin-top:20px;">
+                                <span>Save Avatar</span>
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Security Section -->
+                <section class="profile-section" id="section-security">
+                    <h3 class="profile-section-title">Security</h3>
+                    <p class="profile-section-desc">Change your password. Leave blank to keep current.</p>
+
+                    <div class="profile-form" id="passwordFormWrap">
+                        <div class="profile-field">
+                            <label>Current Password</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-lock"></i></span>
+                                <input type="password" id="currentPasswordInput" placeholder="••••••••">
+                            </div>
+                        </div>
+                        <div class="profile-field">
+                            <label>New Password</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-lock"></i></span>
+                                <input type="password" id="newPasswordInput" placeholder="Min. 6 characters">
+                            </div>
+                        </div>
+                        <div class="profile-field">
+                            <label>Confirm New Password</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-lock"></i></span>
+                                <input type="password" id="confirmPasswordInput" placeholder="Repeat new password">
+                            </div>
+                        </div>
+                        <button class="auth-submit-btn" id="changePasswordBtn" style="max-width:220px;">
+                            <span>Update Password</span>
+                            <i class="fas fa-shield-alt"></i>
+                        </button>
+                    </div>
+
+                    <div class="profile-oauth-notice" id="oauthPasswordNotice" style="display:none;">
+                        <i class="fas fa-info-circle"></i>
+                        Your account is linked via <strong id="oauthProviderName"></strong>. Manage your password through that provider.
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="nav-auth.js"></script>
+    <script>
+    (function() {
+        const STORE_USERS   = 'trident_users';
+        const STORE_CURRENT = 'trident_currentUser';
+
+        function getUser() {
+            try { return JSON.parse(localStorage.getItem(STORE_CURRENT)); } catch(e) { return null; }
+        }
+        function getUsers() {
+            try { return JSON.parse(localStorage.getItem(STORE_USERS)) || []; } catch(e) { return []; }
+        }
+        function saveUser(user) {
+            localStorage.setItem(STORE_CURRENT, JSON.stringify(user));
+            const users = getUsers();
+            const idx   = users.findIndex(u => u.id === user.id);
+            if (idx >= 0) users[idx] = user;
+            localStorage.setItem(STORE_USERS, JSON.stringify(users));
+        }
+
+        function notify(msg, type = 'success') {
+            const n = document.getElementById('notification');
+            if (!n) return;
+            n.textContent = msg;
+            n.className = `notification notification-${type} show`;
+            setTimeout(() => n.classList.remove('show'), 3500);
+        }
+
+        function renderAvatar(user, el) {
+            if (user.avatarUrl) {
+                el.innerHTML = `<img src="${user.avatarUrl}" alt="avatar" style="width:100%;height:100%;border-radius:inherit;object-fit:cover;">`;
+            } else {
+                el.textContent = (user.username || user.email || 'U')[0].toUpperCase();
+            }
+        }
+
+        const user = getUser();
+        if (!user) { window.location.href = 'login.html'; return; }
+
+        // ── Populate sidebar ───────────────────────────────────────────────
+        const roleLabelMap = { admin: 'Admin', 'website-editor': 'Editor', artist: 'Artist', viewer: 'Member' };
+        document.getElementById('sidebarUsername').textContent = user.username || 'User';
+        document.getElementById('sidebarRole').textContent     = roleLabelMap[user.role] || 'Member';
+        document.getElementById('sidebarJoined').textContent   = user.createdAt
+            ? 'Joined ' + new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+            : '';
+
+        if (user.provider) {
+            const pb = document.getElementById('sidebarProvider');
+            pb.style.display = '';
+            pb.innerHTML = `<i class="fab fa-${user.provider}"></i> Linked via ${user.provider.charAt(0).toUpperCase() + user.provider.slice(1)}`;
+        }
+
+        renderAvatar(user, document.getElementById('profileAvatarDisplay'));
+
+        // ── Pre-fill form fields ──────────────────────────────────────────
+        document.getElementById('editUsername').value   = user.username  || '';
+        document.getElementById('editEmail').value      = user.email     || '';
+        document.getElementById('editBio').value        = user.bio       || '';
+        document.getElementById('editDiscordTag').value = user.discordTag || '';
+
+        renderAvatar(user, document.getElementById('avatarPreviewLarge'));
+        if (user.avatarUrl) document.getElementById('avatarUrlInput').value = user.avatarUrl;
+
+        // OAuth users can't change password here
+        if (user.provider) {
+            document.getElementById('passwordFormWrap').style.display    = 'none';
+            document.getElementById('oauthPasswordNotice').style.display = '';
+            document.getElementById('oauthProviderName').textContent     =
+                user.provider.charAt(0).toUpperCase() + user.provider.slice(1);
+        }
+
+        // ── Section nav ───────────────────────────────────────────────────
+        document.querySelectorAll('.profile-nav-btn[data-section]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.profile-nav-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.profile-section').forEach(s => s.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('section-' + btn.dataset.section).classList.add('active');
+            });
+        });
+
+        document.getElementById('profileLogoutBtn').addEventListener('click', () => {
+            localStorage.removeItem(STORE_CURRENT);
+            window.location.href = 'index.html';
+        });
+
+        // ── Save info ──────────────────────────────────────────────────────
+        document.getElementById('saveInfoBtn').addEventListener('click', () => {
+            const newName = document.getElementById('editUsername').value.trim();
+            const newEmail= document.getElementById('editEmail').value.trim();
+            if (!newName) { notify('Display name cannot be empty', 'error'); return; }
+            if (!newEmail){ notify('Email cannot be empty', 'error'); return; }
+
+            user.username   = newName;
+            user.email      = newEmail;
+            user.bio        = document.getElementById('editBio').value.trim();
+            user.discordTag = document.getElementById('editDiscordTag').value.trim();
+
+            saveUser(user);
+            document.getElementById('sidebarUsername').textContent = user.username;
+            notify('Profile updated successfully!');
+        });
+
+        // ── Avatar URL preview ────────────────────────────────────────────
+        document.getElementById('previewAvatarUrlBtn').addEventListener('click', () => {
+            const url = document.getElementById('avatarUrlInput').value.trim();
+            if (!url) { notify('Enter an image URL first', 'error'); return; }
+            const preview = document.getElementById('avatarPreviewLarge');
+            preview.innerHTML = `<img src="${url}" alt="preview" style="width:100%;height:100%;border-radius:inherit;object-fit:cover;" onerror="this.parentNode.textContent='Invalid image URL'">`;
+        });
+
+        // ── File upload ──────────────────────────────────────────────────
+        document.getElementById('avatarUploadInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) { notify('Image must be under 2MB', 'error'); return; }
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const preview = document.getElementById('avatarPreviewLarge');
+                preview.innerHTML = `<img src="${ev.target.result}" alt="preview" style="width:100%;height:100%;border-radius:inherit;object-fit:cover;">`;
+                document.getElementById('avatarUrlInput').value = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // ── Save avatar ──────────────────────────────────────────────────
+        document.getElementById('saveAvatarBtn').addEventListener('click', () => {
+            const url = document.getElementById('avatarUrlInput').value.trim();
+            user.avatarUrl = url;
+            saveUser(user);
+            renderAvatar(user, document.getElementById('profileAvatarDisplay'));
+            notify('Profile picture updated!');
+        });
+
+        // ── Change password ──────────────────────────────────────────────
+        document.getElementById('changePasswordBtn').addEventListener('click', () => {
+            const cur  = document.getElementById('currentPasswordInput').value;
+            const nw   = document.getElementById('newPasswordInput').value;
+            const conf = document.getElementById('confirmPasswordInput').value;
+
+            if (user.password !== cur) { notify('Current password is incorrect', 'error'); return; }
+            if (nw.length < 6)         { notify('New password must be at least 6 characters', 'error'); return; }
+            if (nw !== conf)            { notify('Passwords do not match', 'error'); return; }
+
+            user.password = nw;
+            saveUser(user);
+            document.getElementById('currentPasswordInput').value = '';
+            document.getElementById('newPasswordInput').value     = '';
+            document.getElementById('confirmPasswordInput').value = '';
+            notify('Password updated successfully!');
+        });
+
+        // ── Avatar file input on sidebar icon ─────────────────────────────
+        document.getElementById('avatarFileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file || file.size > 2 * 1024 * 1024) { notify('Image must be under 2MB', 'error'); return; }
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                user.avatarUrl = ev.target.result;
+                saveUser(user);
+                renderAvatar(user, document.getElementById('profileAvatarDisplay'));
+                renderAvatar(user, document.getElementById('avatarPreviewLarge'));
+                document.getElementById('avatarUrlInput').value = ev.target.result;
+                notify('Profile picture updated!');
+            };
+            reader.readAsDataURL(file);
+        });
+    })();
+    </script>
+</body>
+</html>
