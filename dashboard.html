@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Trident Studios</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-page">
+        <div class="dashboard-background">
+            <video class="dashboard-bg-video" autoplay muted loop playsinline>
+                <source src="videos/hero-bg.mp4" type="video/mp4">
+            </video>
+            <div class="dashboard-overlay"></div>
+        </div>
+
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <img src="images/trident-logo.png" alt="Trident Studios" class="dashboard-logo">
+                <h1>TRIDENT STUDIOS</h1>
+                <p id="welcomeMessage">Welcome, User</p>
+            </div>
+
+            <div class="dashboard-options">
+                <div class="option-card" id="editorCard">
+                    <div class="option-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h2>Website Editor</h2>
+                    <p>Edit and customize your website with our drag-and-drop builder</p>
+                    <button class="btn-primary">Enter Editor</button>
+                </div>
+
+                <div class="option-card admin-only" id="adminCard" style="display: none;">
+                    <div class="option-icon admin">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h2>Admin Panel</h2>
+                    <p>Manage users, view analytics, and control system settings</p>
+                    <button class="btn-primary">Enter Admin Panel</button>
+                </div>
+            </div>
+
+            <div class="user-options">
+                <a href="#" id="profileLink" class="user-link">
+                    <i class="fas fa-user-circle"></i> Profile
+                </a>
+                <a href="#" id="logoutLink" class="user-link logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('trident_currentUser'));
+        
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Update welcome message
+        document.getElementById('welcomeMessage').textContent = `Welcome, ${currentUser.username}`;
+
+        // Show admin panel option if user is admin
+        if (currentUser.role === 'admin') {
+            document.getElementById('adminCard').style.display = 'block';
+        }
+
+        // Editor button
+        document.querySelector('.option-card:not(.admin-only) button').addEventListener('click', () => {
+            window.location.href = 'editor.html';
+        });
+
+        // Admin button (if visible)
+        const adminButton = document.querySelector('.admin-only button');
+        if (adminButton) {
+            adminButton.addEventListener('click', () => {
+                window.location.href = 'admin-panel.html';
+            });
+        }
+
+        // Logout
+        document.getElementById('logoutLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('trident_currentUser');
+            window.location.href = 'login.html';
+        });
+
+        // Profile link
+        document.getElementById('profileLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Profile: ' + currentUser.username + '\nEmail: ' + currentUser.email + '\nRole: ' + currentUser.role);
+        });
+    </script>
+</body>
+</html>

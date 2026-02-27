@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Artists - Trident Studios</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="images/trident-logo.png" alt="Trident Studios" class="logo-img">
+                <span>TRIDENT STUDIOS</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html#home" class="nav-link">Home</a></li>
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li><a href="artists.html" class="nav-link">Artists</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="socials.html" class="nav-link">Socials</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Artists Section -->
+    <section class="artists-hero">
+        <h1 class="artists-title">OUR ARTISTS</h1>
+        <p class="artists-subtitle">Meet the talented creators behind Trident Studios</p>
+    </section>
+
+    <section class="artists-container">
+        <div class="container">
+            <div class="artists-grid">
+                <!-- Artist 1 -->
+                <div class="artist-card">
+                    <div class="artist-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="artist-info">
+                        <h2 class="artist-name">Artist One</h2>
+                        <p class="artist-role">Logo Designer & Branding</p>
+                        <p class="artist-discord">@ArtistOne#0001</p>
+                        <p class="artist-bio">Specializing in custom logos and brand identities for gaming communities.</p>
+                        <div class="artist-links">
+                            <a href="https://discord.gg/tridentstudios" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
+                            <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                            <a href="#" title="Twitch" class="artist-link"><i class="fab fa-twitch"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artist 2 -->
+                <div class="artist-card">
+                    <div class="artist-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="artist-info">
+                        <h2 class="artist-name">Artist Two</h2>
+                        <p class="artist-role">Video Editor & Trailer Producer</p>
+                        <p class="artist-discord">@VideoMaster#0002</p>
+                        <p class="artist-bio">Creates stunning video trailers and cinematic gameplay highlights.</p>
+                        <div class="artist-links">
+                            <a href="https://discord.gg/tridentstudios" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
+                            <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                            <a href="#" title="Twitch" class="artist-link"><i class="fab fa-twitch"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artist 3 -->
+                <div class="artist-card">
+                    <div class="artist-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="artist-info">
+                        <h2 class="artist-name">Artist Three</h2>
+                        <p class="artist-role">Graphic Designer & Animator</p>
+                        <p class="artist-discord">@GraphicsGuru#0003</p>
+                        <p class="artist-bio">Designs promotional graphics and eye-catching animations for events.</p>
+                        <div class="artist-links">
+                            <a href="https://discord.gg/tridentstudios" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
+                            <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                            <a href="#" title="Twitch" class="artist-link"><i class="fab fa-twitch"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artist 4 -->
+                <div class="artist-card">
+                    <div class="artist-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="artist-info">
+                        <h2 class="artist-name">Artist Four</h2>
+                        <p class="artist-role">UI/UX Designer</p>
+                        <p class="artist-discord">@UIDesigner#0004</p>
+                        <p class="artist-bio">Designs beautiful Discord servers and in-game UI elements.</p>
+                        <div class="artist-links">
+                            <a href="https://discord.gg/tridentstudios" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
+                            <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                            <a href="#" title="Twitch" class="artist-link"><i class="fab fa-twitch"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Artist Portfolio Details -->
+    <section id="artist1-portfolio" class="artist-portfolio-section hidden">
+        <div class="container">
+            <button class="close-portfolio-btn" onclick="closePortfolio()">&times;</button>
+            <h2>Artist Portfolio</h2>
+            <div class="portfolio-gallery">
+                <div class="portfolio-item">
+                    <div class="portfolio-image"><i class="fas fa-image"></i></div>
+                    <h3>Project 1</h3>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image"><i class="fas fa-image"></i></div>
+                    <h3>Project 2</h3>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image"><i class="fas fa-image"></i></div>
+                    <h3>Project 3</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Back to Top Button -->
+    <a href="artists.html" class="back-to-artists" style="display: none;" onclick="this.style.display='none'">Back to Artists</a>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>TRIDENT STUDIOS</h4>
+                    <p>Premium Rust content creation and graphic design</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html#home">Home</a></li>
+                        <li><a href="index.html#services">Services</a></li>
+                        <li><a href="artists.html">Artists</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="terms-of-service.html">Terms & Conditions</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#" title="Discord"><i class="fab fa-discord"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Trident Studios. All rights reserved. | Rust is a trademark of Facepunch Studios.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Trident Studios</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+<body class="admin-body">
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="images/trident-logo.png" alt="Trident Studios" class="sidebar-logo">
+                <h2>ADMIN</h2>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-section="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users & Roles</span>
+                </a>
+                <a href="#" class="nav-item" data-section="analytics">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item" data-section="visits">
+                    <i class="fas fa-globe"></i>
+                    <span>Website Visits</span>
+                </a>
+                <a href="#" class="nav-item" data-section="audit">
+                    <i class="fas fa-receipt"></i>
+                    <span>Audit Log</span>
+                </a>
+                <a href="#" class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>System Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="dashboard.html" class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <a href="#" id="adminLogout" class="btn-secondary logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1 id="sectionTitle">Dashboard</h1>
+                <div class="admin-user-info">
+                    <span id="adminName">Admin</span>
+                    <img src="https://via.placeholder.com/40" alt="Avatar" class="admin-avatar">
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <section id="Dashboard" class="admin-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Total Visits</h3>
+                            <p class="stat-value">1,234</p>
+                            <span class="stat-change">+12% this month</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Active Users</h3>
+                            <p class="stat-value">8</p>
+                            <span class="stat-change">+2 this week</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Recent Logins</h3>
+                            <p class="stat-value">23</p>
+                            <span class="stat-change">Today</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-mouse-pointer"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Button Interactions</h3>
+                            <p class="stat-value">456</p>
+                            <span class="stat-change">+34% increase</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-sections">
+                    <div class="info-section">
+                        <h3>Recent Logins</h3>
+                        <div class="recent-activity" id="recentLogins">
+                            <div class="activity-item">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <div class="activity-content">
+                                    <p><strong>stefanowicz.trystan@gmail.com</strong> logged in</p>
+                                    <span class="time">2 minutes ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Recent Interactions</h3>
+                        <div class="recent-activity" id="recentInteractions">
+                            <div class="activity-item">
+                                <i class="fas fa-mouse"></i>
+                                <div class="activity-content">
+                                    <p>Clicked <strong>"Services"</strong> button</p>
+                                    <span class="time">15 seconds ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users & Roles Section -->
+            <section id="Users & Roles" class="admin-section">
+                <div class="section-header">
+                    <h2>User Management</h2>
+                    <button class="btn-primary" id="addUserBtn">
+                        <i class="fas fa-plus"></i> Add User
+                    </button>
+                </div>
+
+                <div class="users-table">
+                    <div class="table-header">
+                        <div class="table-cell">Email</div>
+                        <div class="table-cell">Username</div>
+                        <div class="table-cell">Password</div>
+                        <div class="table-cell">Role / Permission</div>
+                        <div class="table-cell">Created</div>
+                        <div class="table-cell">Actions</div>
+                    </div>
+                    <div id="usersTableBody"></div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="Analytics" class="admin-section">
+                <div class="section-header">
+                    <h2>Analytics & Data</h2>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Traffic Overview</h3>
+                        <div class="analytics-stat">
+                            <div class="stat-item">
+                                <span>Total Page Views</span>
+                                <strong>5,678</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Unique Visitors</span>
+                                <strong>1,234</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Bounce Rate</span>
+                                <strong>32%</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Popular Pages</h3>
+                        <div class="analytics-stat">
+                            <div class="stat-item">
+                                <span>Home</span>
+                                <strong>1,234 views</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Services</span>
+                                <strong>856 views</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Portfolio</span>
+                                <strong>678 views</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>User Activity</h3>
+                        <div class="analytics-stat">
+                            <div class="stat-item">
+                                <span>Editor Usage</span>
+                                <strong>156 hours</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Admin Logins</span>
+                                <strong>89 times</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Changes Made</span>
+                                <strong>234 edits</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Website Visits Section -->
+            <section id="Website Visits" class="admin-section">
+                <div class="section-header">
+                    <h2>Website Visits - Monthly Trend</h2>
+                </div>
+
+                <div class="visits-chart-container">
+                    <canvas id="visitsChart"></canvas>
+                    <div class="chart-info">
+                        <p>Hover over the graph to see detailed statistics for each day</p>
+                    </div>
+                    <div id="chartHoverInfo" class="chart-hover-info" style="display:none;">
+                        <p><strong id="hoverDate">Date</strong></p>
+                        <p>Visits: <strong id="hoverVisits">0</strong></p>
+                        <p>Unique Visitors: <strong id="hoverUnique">0</strong></p>
+                        <p>Avg. Time: <strong id="hoverTime">0m</strong></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Audit Log Section -->
+            <section id="Audit Log" class="admin-section">
+                <div class="section-header">
+                    <h2>Audit Log</h2>
+                    <button class="btn-secondary" id="clearAuditBtn">
+                        <i class="fas fa-trash"></i> Clear Log
+                    </button>
+                </div>
+
+                <div class="audit-table">
+                    <div class="table-header">
+                        <div class="table-cell">Timestamp</div>
+                        <div class="table-cell">User</div>
+                        <div class="table-cell">Action</div>
+                        <div class="table-cell">Details</div>
+                    </div>
+                    <div id="auditTableBody"></div>
+                </div>
+            </section>
+
+            <!-- System Settings Section -->
+            <section id="System Settings" class="admin-section">
+                <div class="section-header">
+                    <h2>System Settings</h2>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <div class="setting-item">
+                            <label>
+                                <span>Website Title</span>
+                                <input type="text" id="siteTitleInput" value="TRIDENT STUDIOS">
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <label>
+                                <span>Website Subtitle</span>
+                                <input type="text" id="siteSubtitleInput" value="Elite Rust Content Creation & Design Studio">
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <label>
+                                <span>Contact Email</span>
+                                <input type="email" id="contactEmailInput" value="contact@tridentstudios.gg">
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <label>
+                                <span>Discord Server Link</span>
+                                <input type="url" id="discordLinkInput" value="https://discord.gg/">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="enableNotifications" checked>
+                                <span>Enable Admin Notifications</span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="maintenanceMode">
+                                <span>Maintenance Mode</span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="enableAnalytics" checked>
+                                <span>Analytics Tracking</span>
+                            </label>
+                        </div>
+
+                        <button class="btn-primary" style="margin-top: 20px;" id="saveSettingsBtn">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New User</h2>
+                <button class="modal-close" id="closeAddUserModal">&times;</button>
+            </div>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="newUserEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="newUserUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="newUserPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="newUserRole" required>
+                        <option value="website-editor">Website Editor</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Add User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script src="admin-panel.js"></script>
+</body>
+</html>

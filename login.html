@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login – Trident Studios</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="login-body">
+
+    <!-- Background -->
+    <div class="login-bg">
+        <video class="login-bg-video" autoplay muted loop playsinline>
+            <source src="videos/hero-bg.mp4" type="video/mp4">
+        </video>
+        <div class="login-bg-overlay"></div>
+    </div>
+
+    <!-- Back Button -->
+    <a href="index.html" class="login-back-btn">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Home</span>
+    </a>
+
+    <!-- Card Wrapper -->
+    <div class="login-wrapper">
+        <div class="login-card">
+
+            <!-- Header -->
+            <div class="login-card-header">
+                <img src="images/trident-logo.png" alt="Trident Studios" class="login-card-logo">
+                <h1 class="login-card-title">TRIDENT STUDIOS</h1>
+                <p class="login-card-subtitle">Studio Management Portal</p>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="loginForm" class="auth-form active-form" autocomplete="on">
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                    <input type="email" id="loginEmail" placeholder="Email address" autocomplete="email" required>
+                </div>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">
+                    <span>Sign In</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <div class="auth-link">
+                    <a href="#" id="forgotPasswordLink">Forgot password?</a>
+                </div>
+                <div class="auth-divider"><span>or continue with</span></div>
+                <div class="oauth-row">
+                    <button type="button" class="oauth-btn oauth-google" id="googleLogin">
+                        <i class="fab fa-google"></i> Google
+                    </button>
+                    <button type="button" class="oauth-btn oauth-discord" id="discordLogin">
+                        <i class="fab fa-discord"></i> Discord
+                    </button>
+                </div>
+                <div class="auth-switch">
+                    Don't have an account? <a href="#" id="switchToSignup">Create one</a>
+                </div>
+            </form>
+
+            <!-- SIGNUP FORM -->
+            <form id="signupForm" class="auth-form" autocomplete="on">
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-user"></i></span>
+                    <input type="text" id="signupUsername" placeholder="Username" autocomplete="username" required>
+                </div>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                    <input type="email" id="signupEmail" placeholder="Email address" autocomplete="email" required>
+                </div>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" id="signupPassword" placeholder="Password" autocomplete="new-password" required>
+                </div>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" id="signupConfirmPassword" placeholder="Confirm password" autocomplete="new-password" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">
+                    <span>Create Account</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <div class="auth-switch">
+                    Already have an account? <a href="#" id="switchToLogin">Sign in</a>
+                </div>
+            </form>
+
+            <!-- FORGOT PASSWORD FORM -->
+            <form id="forgotPasswordForm" class="auth-form">
+                <p class="auth-desc">Enter your email to receive a password reset link.</p>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                    <input type="email" id="forgotEmail" placeholder="Email address" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">
+                    <span>Send Reset Link</span>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+                <div class="auth-link" style="text-align:center;margin-top:16px;">
+                    <a href="#" id="backToLogin"><i class="fas fa-arrow-left" style="margin-right:6px;"></i>Back to Login</a>
+                </div>
+            </form>
+
+        </div>
+        <p class="login-footer-text">&copy; 2026 Trident Studios. All rights reserved.</p>
+    </div>
+
+    <div id="notification" class="notification"></div>
+    <script src="auth.js"></script>
+</body>
+</html>
