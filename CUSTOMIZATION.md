@@ -28,7 +28,7 @@ Replace with your actual email address
 Update these links:
 ```html
 <a href="https://twitter.com/yourhandle" title="Twitter"><i class="fab fa-twitter"></i></a>
-<a href="https://youtube.com/@yourhandle" title="YouTube"><i class="fab fa-youtube"></i></a>
+<a href="https://youtube.com/@TridentGraphic" title="YouTube"><i class="fab fa-youtube"></i></a>
 ```
 
 ---
