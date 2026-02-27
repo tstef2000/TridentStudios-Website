@@ -224,8 +224,11 @@
 
         // ── Populate sidebar ───────────────────────────────────────────────
         const roleLabelMap = { admin: 'Admin', 'website-editor': 'Editor', artist: 'Artist', viewer: 'Member' };
+        const userRoles = Array.isArray(user.roles) && user.roles.length
+            ? user.roles
+            : (user.role ? [user.role] : ['viewer']);
         document.getElementById('sidebarUsername').textContent = user.username || 'User';
-        document.getElementById('sidebarRole').textContent     = roleLabelMap[user.role] || 'Member';
+        document.getElementById('sidebarRole').textContent     = userRoles.map(r => roleLabelMap[r] || 'Member').join(' • ');
         document.getElementById('sidebarJoined').textContent   = user.createdAt
             ? 'Joined ' + new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
             : '';

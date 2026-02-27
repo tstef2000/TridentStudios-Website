@@ -4,11 +4,18 @@ class AdminPanelManager {
         this.currentUser = JSON.parse(localStorage.getItem('trident_currentUser'));
         this.users = JSON.parse(localStorage.getItem('trident_users') || '[]');
         this.auditLogs = JSON.parse(localStorage.getItem('trident_audit_logs') || '[]');
-        
+
+        this.users = this.users.map(user => this.normalizeUserRoles(user));
+        if (this.currentUser) this.currentUser = this.normalizeUserRoles(this.currentUser);
+
         // Check if user is admin
-        if (!this.currentUser || this.currentUser.role !== 'admin') {
+        if (!this.currentUser || !this.userHasRole(this.currentUser, 'admin')) {
             window.location.href = 'dashboard.html';
+            return;
         }
+
+        localStorage.setItem('trident_users', JSON.stringify(this.users));
+        localStorage.setItem('trident_currentUser', JSON.stringify(this.currentUser));
 
         this.initializeEventListeners();
         this.renderUsers();
@@ -16,6 +23,27 @@ class AdminPanelManager {
         this.initializeChart();
         this.loadSettings();
         this.setupNavigation();
+    }
+
+    getUserRoles(user) {
+        if (!user) return ['viewer'];
+        if (Array.isArray(user.roles) && user.roles.length) return user.roles;
+        if (typeof user.role === 'string' && user.role.trim()) return [user.role];
+        return ['viewer'];
+    }
+
+    normalizeUserRoles(user) {
+        const roles = [...new Set(this.getUserRoles(user).filter(Boolean))];
+        const normalizedRoles = roles.length ? roles : ['viewer'];
+        return {
+            ...user,
+            roles: normalizedRoles,
+            role: normalizedRoles[0]
+        };
+    }
+
+    userHasRole(user, role) {
+        return this.getUserRoles(user).includes(role);
     }
 
     initializeEventListeners() {
@@ -44,6 +72,8 @@ class AdminPanelManager {
         });
 
         document.getElementById('addUserForm').addEventListener('submit', (e) => this.handleAddUser(e));
+        document.getElementById('newUserRoles').addEventListener('change', () => this.toggleArtistCardField());
+        this.toggleArtistCardField();
 
         // Clear audit log
         document.getElementById('clearAuditBtn').addEventListener('click', () => {
@@ -95,7 +125,15 @@ class AdminPanelManager {
         });
 
         // Update admin name
-        document.getElementById('adminName').textContent = this.currentUser.username;
+        document.getElementById('adminName').textContent = this.currentUser.username || this.currentUser.email || 'Admin';
+    }
+
+    toggleArtistCardField() {
+        const rolesSelect = document.getElementById('newUserRoles');
+        const artistCardField = document.getElementById('artistCardField');
+        if (!rolesSelect || !artistCardField) return;
+        const selectedRoles = Array.from(rolesSelect.selectedOptions).map(opt => opt.value);
+        artistCardField.style.display = selectedRoles.includes('artist') ? 'block' : 'none';
     }
 
     setupNavigation() {
@@ -156,13 +194,13 @@ class AdminPanelManager {
                 <div class="table-cell">${user.username}</div>
                 <div class="table-cell password">${passwordDisplay}</div>
                 <div class="table-cell role-cell">
-                    <select class="role-select" data-user-id="${user.id}">
-                        <option value="viewer" ${user.role === 'viewer' ? 'selected' : ''}>Viewer</option>
-                        <option value="artist" ${user.role === 'artist' ? 'selected' : ''}>Artist</option>
-                        <option value="website-editor" ${user.role === 'website-editor' ? 'selected' : ''}>Website Editor</option>
-                        <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
+                    <select class="role-select" data-user-id="${user.id}" multiple size="4" title="Hold Ctrl/Cmd to select multiple roles">
+                        <option value="viewer" ${this.userHasRole(user, 'viewer') ? 'selected' : ''}>Viewer</option>
+                        <option value="artist" ${this.userHasRole(user, 'artist') ? 'selected' : ''}>Artist</option>
+                        <option value="website-editor" ${this.userHasRole(user, 'website-editor') ? 'selected' : ''}>Website Editor</option>
+                        <option value="admin" ${this.userHasRole(user, 'admin') ? 'selected' : ''}>Admin</option>
                     </select>
-                    ${user.role === 'artist' ? `<select class="card-select" data-user-id="${user.id}" style="margin-top:4px;font-size:12px;background:rgba(3,23,35,0.9);border:1px solid rgba(43,179,255,0.2);color:var(--text-light);padding:4px 8px;border-radius:6px;"><option value="1" ${user.artistCardId==='1'?'selected':''}>Card 1</option><option value="2" ${user.artistCardId==='2'?'selected':''}>Card 2</option><option value="3" ${user.artistCardId==='3'?'selected':''}>Card 3</option><option value="4" ${user.artistCardId==='4'?'selected':''}>Card 4</option></select>` : ''}
+                    ${this.userHasRole(user, 'artist') ? `<select class="card-select" data-user-id="${user.id}" style="margin-top:4px;font-size:12px;background:rgba(3,23,35,0.9);border:1px solid rgba(43,179,255,0.2);color:var(--text-light);padding:4px 8px;border-radius:6px;"><option value="1" ${user.artistCardId==='1'?'selected':''}>Card 1</option><option value="2" ${user.artistCardId==='2'?'selected':''}>Card 2</option><option value="3" ${user.artistCardId==='3'?'selected':''}>Card 3</option><option value="4" ${user.artistCardId==='4'?'selected':''}>Card 4</option></select>` : ''}
                 </div>
                 <div class="table-cell">${new Date(user.createdAt).toLocaleDateString()}</div>
                 <div class="table-cell actions">
@@ -175,7 +213,8 @@ class AdminPanelManager {
             // Role change listener
             const roleSelect = row.querySelector('.role-select');
             roleSelect.addEventListener('change', (e) => {
-                this.updateUserRole(user.id, e.target.value);
+                const selectedRoles = Array.from(e.target.selectedOptions).map(opt => opt.value);
+                this.updateUserRoles(user.id, selectedRoles);
                 this.renderUsers(); // re-render to show/hide card selector
             });
             // Card assignment listener (for artist role)
@@ -186,6 +225,7 @@ class AdminPanelManager {
                     if (u) {
                         u.artistCardId = e.target.value;
                         localStorage.setItem('trident_users', JSON.stringify(this.users));
+                        this.syncCurrentUserRecord(u);
                         this.logAction('Assigned artist card', `${u.email}: card ${e.target.value}`);
                         this.showNotification(`Artist card ${e.target.value} assigned`, 'success');
                     }
@@ -225,49 +265,61 @@ class AdminPanelManager {
 
     handleAddUser(e) {
         e.preventDefault();
-        
+
         const email = document.getElementById('newUserEmail').value;
         const username = document.getElementById('newUserUsername').value;
         const password = document.getElementById('newUserPassword').value;
-        const role = document.getElementById('newUserRole').value;
-        const artistCardId = role === 'artist' ? (document.getElementById('newUserArtistCard').value || '1') : null;
+        const selectedRoles = Array.from(document.getElementById('newUserRoles').selectedOptions).map(opt => opt.value);
+        const roles = selectedRoles.length ? selectedRoles : ['viewer'];
+        const artistCardId = roles.includes('artist') ? (document.getElementById('newUserArtistCard').value || '1') : null;
 
         if (this.users.find(u => u.email === email)) {
             this.showNotification('User already exists', 'error');
             return;
         }
 
-        const newUser = {
+        const newUser = this.normalizeUserRoles({
             id: Date.now().toString(),
             email,
             username,
             password,
-            role,
+            roles,
             artistCardId: artistCardId || null,
             createdAt: new Date().toISOString(),
             lastLogin: null
-        };
+        });
 
         this.users.push(newUser);
         localStorage.setItem('trident_users', JSON.stringify(this.users));
-        
-        // Log action
-        this.logAction(`Added new user ${email}`, `Role: ${role}`);
+
+        this.logAction(`Added new user ${email}`, `Roles: ${newUser.roles.join(', ')}`);
 
         this.showNotification(`User ${email} added successfully`, 'success');
         document.getElementById('addUserForm').reset();
+        document.getElementById('newUserRoles').querySelector('option[value="viewer"]').selected = true;
+        this.toggleArtistCardField();
         document.getElementById('addUserModal').style.display = 'none';
         this.renderUsers();
     }
 
-    updateUserRole(userId, newRole) {
+    updateUserRoles(userId, nextRoles) {
         const user = this.users.find(u => u.id === userId);
         if (user) {
-            user.role = newRole;
+            const normalizedRoles = (nextRoles && nextRoles.length) ? [...new Set(nextRoles)] : ['viewer'];
+            user.roles = normalizedRoles;
+            user.role = normalizedRoles[0];
+            if (!normalizedRoles.includes('artist')) user.artistCardId = null;
             localStorage.setItem('trident_users', JSON.stringify(this.users));
-            this.logAction(`Updated user role`, `${user.email}: ${newRole}`);
-            this.showNotification(`User role updated to ${newRole}`, 'success');
+            this.syncCurrentUserRecord(user);
+            this.logAction('Updated user roles', `${user.email}: ${normalizedRoles.join(', ')}`);
+            this.showNotification(`Roles updated: ${normalizedRoles.join(', ')}`, 'success');
         }
+    }
+
+    syncCurrentUserRecord(updatedUser) {
+        if (!updatedUser || !this.currentUser || this.currentUser.id !== updatedUser.id) return;
+        this.currentUser = this.normalizeUserRoles({ ...this.currentUser, ...updatedUser });
+        localStorage.setItem('trident_currentUser', JSON.stringify(this.currentUser));
     }
 
     deleteUser(userId) {
@@ -275,6 +327,9 @@ class AdminPanelManager {
         if (user) {
             this.users = this.users.filter(u => u.id !== userId);
             localStorage.setItem('trident_users', JSON.stringify(this.users));
+            if (this.currentUser && this.currentUser.id === userId) {
+                localStorage.removeItem('trident_currentUser');
+            }
             this.logAction(`Deleted user`, user.email);
             this.showNotification('User deleted', 'success');
             this.renderUsers();

@@ -6,7 +6,8 @@ class WebsiteEditor {
     constructor() {
         this.currentUser = JSON.parse(localStorage.getItem('trident_currentUser'));
 
-        if (!this.currentUser || (this.currentUser.role !== 'website-editor' && this.currentUser.role !== 'admin')) {
+        const roles = this.getUserRoles(this.currentUser);
+        if (!this.currentUser || (!roles.includes('website-editor') && !roles.includes('admin'))) {
             window.location.href = 'dashboard.html';
             return;
         }
@@ -19,6 +20,13 @@ class WebsiteEditor {
         this.initEditorControls();
         this.iframe.addEventListener('load', () => this.initIframeEditing());
         this.logAction('Opened editor', 'Website editor session started');
+    }
+
+    getUserRoles(user) {
+        if (!user) return ['viewer'];
+        if (Array.isArray(user.roles) && user.roles.length) return user.roles;
+        if (typeof user.role === 'string' && user.role.trim()) return [user.role];
+        return ['viewer'];
     }
 
     // ── Inject editing helpers into the iframe after it loads ──────────────
@@ -251,23 +259,31 @@ class WebsiteEditor {
             return;
         }
 
+        // Clone document to avoid modifying the live preview
+        const docClone = doc.cloneNode(true);
+
         // Remove editor elements before publishing
-        const editorBar = doc.querySelector('.ts-edit-bar');
+        const editorBar = docClone.querySelector('.ts-edit-bar');
         if (editorBar) editorBar.remove();
         
-        const editorStyle = doc.getElementById('ts-editor-styles');
+        const editorStyle = docClone.getElementById('ts-editor-styles');
         if (editorStyle) editorStyle.remove();
 
         // Remove editor classes
-        doc.querySelectorAll('.ts-selectable, .ts-selected').forEach(el => {
+        docClone.querySelectorAll('.ts-selectable, .ts-selected').forEach(el => {
             el.classList.remove('ts-selectable', 'ts-selected');
         });
 
+        // Remove ts-changed attributes
+        docClone.querySelectorAll('[data-ts-changed]').forEach(el => {
+            el.removeAttribute('data-ts-changed');
+        });
+
         // Reset body padding
-        doc.body.style.paddingTop = '';
+        if (docClone.body) docClone.body.style.paddingTop = '';
 
         // Get clean HTML
-        const htmlContent = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+        const htmlContent = '<!DOCTYPE html>\n' + docClone.documentElement.outerHTML;
 
         // Determine filename (currently editing index.html)
         const filename = 'index.html'; // TODO: Make this dynamic based on what page is being edited
@@ -275,6 +291,7 @@ class WebsiteEditor {
         this.showNotification('Publishing changes...', 'info');
 
         try {
+            const roles = this.getUserRoles(this.currentUser);
             const response = await fetch('/api/publish.php', {
                 method: 'POST',
                 headers: {
@@ -284,7 +301,7 @@ class WebsiteEditor {
                     filename: filename,
                     html_content: htmlContent,
                     user_email: this.currentUser.email,
-                    user_role: this.currentUser.role
+                    user_role: roles.includes('admin') ? 'admin' : 'website-editor'
                 })
             });
 
@@ -293,8 +310,11 @@ class WebsiteEditor {
             if (result.success) {
                 localStorage.setItem('trident_page_published', new Date().toISOString());
                 this.logAction('Published changes', `Website updated: ${filename}`);
-                this.showNotification('✓ Changes published successfully!', 'success');
-                setTimeout(() => { window.location.href = 'index.html'; }, 1600);
+                this.showNotification('✓ Changes published successfully! Reloading...', 'success');
+                setTimeout(() => { 
+                    // Reload the page fully to show published changes
+                    window.location.reload(); 
+                }, 1600);
             } else {
                 this.showNotification('Publish failed: ' + (result.error || 'Unknown error'), 'error');
             }

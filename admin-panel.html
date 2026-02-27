@@ -258,17 +258,19 @@
                                 <span>Admin Logins</span>
                                 <strong>89 times</strong>
                             </div>
+                            <div class="stat-item">
+                                <span>Content Updates</span>
+                                <strong>4 edits</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="section-save-bar">
                     <button class="btn-primary" id="saveAnalyticsBtn">
                         <i class="fas fa-sync-alt"></i> Refresh Analytics
                     </button>
                     <span class="save-timestamp" id="analyticsSaveTime"></span>
-                </div>
-            </section4 edits</strong>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
@@ -283,19 +285,19 @@
                     <div class="chart-info">
                         <p>Hover over the graph to see detailed statistics for each day</p>
                     </div>
-
-                <div class="section-save-bar">
-                    <button class="btn-primary" id="refreshVisitsBtn">
-                        <i class="fas fa-sync-alt"></i> Refresh Visit Data
-                    </button>
-                    <span class="save-timestamp" id="visitsSaveTime"></span>
-                </div>
                     <div id="chartHoverInfo" class="chart-hover-info" style="display:none;">
                         <p><strong id="hoverDate">Date</strong></p>
                         <p>Visits: <strong id="hoverVisits">0</strong></p>
                         <p>Unique Visitors: <strong id="hoverUnique">0</strong></p>
                         <p>Avg. Time: <strong id="hoverTime">0m</strong></p>
                     </div>
+                </div>
+
+                <div class="section-save-bar">
+                    <button class="btn-primary" id="refreshVisitsBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh Visit Data
+                    </button>
+                    <span class="save-timestamp" id="visitsSaveTime"></span>
                 </div>
             </section>
 
@@ -310,19 +312,19 @@
 
                 <div class="audit-table">
                     <div class="table-header">
-
-                <div class="section-save-bar">
-                    <button class="btn-secondary" id="exportAuditBtn">
-                        <i class="fas fa-download"></i> Export Log
-                    </button>
-                    <span class="save-timestamp" id="auditSaveTime"></span>
-                </div>
                         <div class="table-cell">Timestamp</div>
                         <div class="table-cell">User</div>
                         <div class="table-cell">Action</div>
                         <div class="table-cell">Details</div>
                     </div>
                     <div id="auditTableBody"></div>
+                </div>
+
+                <div class="section-save-bar">
+                    <button class="btn-secondary" id="exportAuditBtn">
+                        <i class="fas fa-download"></i> Export Log
+                    </button>
+                    <span class="save-timestamp" id="auditSaveTime"></span>
                 </div>
             </section>
 
@@ -358,7 +360,7 @@
                         <div class="setting-item">
                             <label>
                                 <span>Discord Server Link</span>
-                                <input type="url" id="discordLinkInput" value="https://discord.gg/FdhYmQu8rb">
+                                <input type="url" id="discordLinkInput" value="https://discord.gg/dPj6S5Vc2A">
                             </label>
                         </div>
                     </div>
@@ -400,7 +402,7 @@
                             <div class="setting-item">
                                 <label>
                                     <span><i class="fab fa-discord" style="color: #5865F2; margin-right: 6px;"></i> Discord Invite</span>
-                                    <input type="url" id="socialDiscord" placeholder="https://discord.gg/FdhYmQu8rb">
+                                    <input type="url" id="socialDiscord" placeholder="https://discord.gg/dPj6S5Vc2A">
                                 </label>
                             </div>
                             <div class="setting-item">
@@ -444,9 +446,9 @@
                     <input type="password" id="newUserPassword" required>
                 </div>
                 <div class="form-group">
-                    <label>Role</label>
-                    <select id="newUserRole" required onchange="document.getElementById('artistCardField').style.display=this.value==='artist'?'block':'none'">
-                        <option value="viewer">Viewer</option>
+                    <label>Roles (hold Ctrl/Cmd to select multiple)</label>
+                    <select id="newUserRoles" multiple size="4" required>
+                        <option value="viewer" selected>Viewer</option>
                         <option value="artist">Artist</option>
                         <option value="website-editor">Website Editor</option>
                         <option value="admin">Admin</option>

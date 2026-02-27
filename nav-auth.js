@@ -9,11 +9,24 @@
         catch (e) { return null; }
     }
 
+    function getUserRoles(user) {
+        if (!user) return ['viewer'];
+        if (Array.isArray(user.roles) && user.roles.length) return user.roles;
+        if (typeof user.role === 'string' && user.role.trim()) return [user.role];
+        return ['viewer'];
+    }
+
+    function hasRole(user, role) {
+        return getUserRoles(user).includes(role);
+    }
+
     function buildPill(user) {
         const hasAvatar = user.avatarUrl && user.avatarUrl.trim() !== '';
         const initial   = (user.username || user.email || 'U')[0].toUpperCase();
-        const hasDash   = (user.role === 'admin' || user.role === 'website-editor' || user.role === 'artist');
-        const roleLabel = { admin: 'Admin', 'website-editor': 'Editor', artist: 'Artist', viewer: 'Viewer' }[user.role] || 'User';
+        const roles = getUserRoles(user);
+        const hasDash   = hasRole(user, 'admin') || hasRole(user, 'website-editor') || hasRole(user, 'artist');
+        const roleLabelMap = { admin: 'Admin', 'website-editor': 'Editor', artist: 'Artist', viewer: 'Viewer' };
+        const roleLabel = roles.map(r => roleLabelMap[r] || 'User').join(' • ');
 
         const pill = document.createElement('div');
         pill.className = 'nav-user-pill';

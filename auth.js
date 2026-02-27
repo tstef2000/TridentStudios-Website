@@ -6,6 +6,13 @@ class AuthManager {
         window.authManager = this;
     }
 
+    getUserRoles(user) {
+        if (!user) return ['viewer'];
+        if (Array.isArray(user.roles) && user.roles.length) return user.roles;
+        if (typeof user.role === 'string' && user.role.trim()) return [user.role];
+        return ['viewer'];
+    }
+
     initializeEventListeners() {
         const loginForm = document.getElementById('loginForm');
         if (loginForm) loginForm.addEventListener('submit', (e) => this.handleLogin(e));
@@ -39,7 +46,6 @@ class AuthManager {
         const password = document.getElementById('loginPassword').value;
         const user = this.users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
         if (!user) { this.showNotification('No account found with that email.', 'error'); return; }
-        if (user.provider) { this.showNotification('This account uses ' + user.provider + ' login. Use the OAuth button.', 'info'); return; }
         if (user.password !== password) { this.showNotification('Incorrect password.', 'error'); return; }
         this.loginUser(user);
     }
@@ -90,13 +96,10 @@ class AuthManager {
         this.showNotification('Welcome back, ' + (user.username || user.email) + '!', 'success');
 
         // Role-based routing
-        const routes = {
-            admin: 'dashboard.html',
-            'website-editor': 'dashboard.html',
-            artist: 'artist-editor.html'
-            // viewer and anything else → index.html
-        };
-        const dest = routes[user.role] || 'index.html';
+        const roles = this.getUserRoles(user);
+        let dest = 'index.html';
+        if (roles.includes('admin') || roles.includes('website-editor')) dest = 'dashboard.html';
+        else if (roles.includes('artist')) dest = 'artist-editor.html';
         setTimeout(() => { window.location.href = dest; }, 1500);
     }
 
@@ -116,6 +119,7 @@ class AuthManager {
             email: 'stefanowicz.trystan@gmail.com',
             password: 'Trystan1',
             role: 'admin',
+            roles: ['admin'],
             createdAt: new Date().toISOString(),
             lastLogin: null
         }];

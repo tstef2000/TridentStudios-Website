@@ -49,7 +49,7 @@
                     </div>
                     <h3>Trident Studios Discord</h3>
                     <p>Join our official community server to connect with creators and get the latest updates</p>
-                    <a href="https://discord.gg/YOUR_SERVER_INVITE" target="_blank" class="social-button">Join Discord Server</a>
+                    <a href="https://discord.gg/dPj6S5Vc2A" target="_blank" class="social-button">Join Discord Server</a>
                 </div>
             </div>
 
@@ -177,5 +177,68 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="artist-config.js"></script>
+    <script>
+    // Load artist data from artist-config.js file for the Socials page
+    (function() {
+        if (typeof ARTIST_CONFIG === 'undefined') {
+            console.error('Artist config file not loaded!');
+            return;
+        }
+        
+        // Render artists in the socials section
+        var socialsGrid = document.querySelector('.artists-socials-grid');
+        if (socialsGrid && ARTIST_CONFIG.socialsPage) {
+            // Clear existing placeholder cards
+            socialsGrid.innerHTML = '';
+            
+            // Create cards from config
+            ARTIST_CONFIG.socialsPage.forEach(function(artist) {
+                var card = document.createElement('div');
+                card.className = 'artist-social-card';
+                
+                var linksHtml = '';
+                if (artist.socials) {
+                    if (artist.socials.discord && artist.socials.discord !== '#') {
+                        linksHtml += '<a href="' + artist.socials.discord + '" target="_blank" class="social-icon-link">' +
+                                     '<i class="fab fa-discord"></i>' +
+                                     '<span>Discord</span>' +
+                                     '</a>';
+                    }
+                    if (artist.socials.youtube && artist.socials.youtube !== '#') {
+                        linksHtml += '<a href="' + artist.socials.youtube + '" target="_blank" class="social-icon-link">' +
+                                     '<i class="fab fa-youtube"></i>' +
+                                     '<span>YouTube</span>' +
+                                     '</a>';
+                    }
+                }
+                
+                card.innerHTML = '<h3>' + artist.name + '</h3>' +
+                                 '<p class="artist-role-small">' + artist.roleTitle + '</p>' +
+                                 '<div class="artist-social-links">' + linksHtml + '</div>';
+                
+                socialsGrid.appendChild(card);
+            });
+        }
+        
+        // Update official Discord link
+        if (ARTIST_CONFIG.globalSettings && ARTIST_CONFIG.globalSettings.officialDiscord) {
+            var discordLinks = document.querySelectorAll('a[href*="discord.gg"]');
+            discordLinks.forEach(function(link) {
+                if (link.closest('.official-server-card')) {
+                    link.href = ARTIST_CONFIG.globalSettings.officialDiscord;
+                }
+            });
+        }
+        
+        // Update studio YouTube link
+        if (ARTIST_CONFIG.globalSettings && ARTIST_CONFIG.globalSettings.studioYoutube) {
+            var studioYoutubeLink = document.querySelector('.studio-social-link[href*="youtube"]');
+            if (studioYoutubeLink && ARTIST_CONFIG.globalSettings.studioYoutube !== '#') {
+                studioYoutubeLink.href = ARTIST_CONFIG.globalSettings.studioYoutube;
+            }
+        }
+    })();
+    </script>
 </body>
 </html>

@@ -69,8 +69,17 @@
         // Update welcome message
         document.getElementById('welcomeMessage').textContent = `Welcome, ${currentUser.username}`;
 
+        function getUserRoles(user) {
+            if (!user) return ['viewer'];
+            if (Array.isArray(user.roles) && user.roles.length) return user.roles;
+            if (typeof user.role === 'string' && user.role.trim()) return [user.role];
+            return ['viewer'];
+        }
+
+        const roles = getUserRoles(currentUser);
+
         // Show admin panel option if user is admin
-        if (currentUser.role === 'admin') {
+        if (roles.includes('admin')) {
             document.getElementById('adminCard').style.display = 'block';
         }
 
@@ -97,7 +106,7 @@
         // Profile link
         document.getElementById('profileLink').addEventListener('click', (e) => {
             e.preventDefault();
-            alert('Profile: ' + currentUser.username + '\nEmail: ' + currentUser.email + '\nRole: ' + currentUser.role);
+            alert('Profile: ' + currentUser.username + '\nEmail: ' + currentUser.email + '\nRoles: ' + roles.join(', '));
         });
     </script>
 </body>

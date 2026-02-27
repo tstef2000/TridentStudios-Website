@@ -26,7 +26,7 @@
                 <div class="artist-editor-header-left">
                     <img src="images/trident-logo.png" alt="Trident Studios" class="artist-editor-logo">
                     <div>
-                        <h1>Artist Card Editor</h1>
+                        <h1>Artist Card Editor <span id="cardIdBadge" style="font-size:16px;color:var(--primary-color);font-weight:400;opacity:0.8;"></span></h1>
                         <p>Personalize your public artist profile on the Trident Studios website</p>
                     </div>
                 </div>
@@ -86,7 +86,6 @@
                             <label>Image URL</label>
                             <div class="input-group">
                                 <span class="input-icon"><i class="fas fa-link"></i></span>
-                                <input type="url" id="artistAvatarUrl" placeholder="https://i.imgur.com/yourimage.png">
                             </div>
                         </div>
 
@@ -173,16 +172,49 @@
             setTimeout(() => n.classList.remove('show'), 3500);
         }
 
+        function getUserRoles(u) {
+            if (!u) return ['viewer'];
+            if (Array.isArray(u.roles) && u.roles.length) return u.roles;
+            if (typeof u.role === 'string' && u.role.trim()) return [u.role];
+            return ['viewer'];
+        }
+
         const user = getUser();
-        if (!user || (user.role !== 'artist' && user.role !== 'admin')) {
+        const roles = getUserRoles(user);
+        if (!user || (!roles.includes('artist') && !roles.includes('admin'))) {
             window.location.href = 'dashboard.html';
             return;
         }
 
-        // Artist card ID: admins use card "admin", artists use their assigned card
-        const cardId = user.role === 'admin' ? (user.artistCardId || '1') : (user.artistCardId || '1');
+        // Get card ID from URL parameter (for admins) or from user's assigned card
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlCardId = urlParams.get('card');
+        let cardId;
+        
+        if (roles.includes('admin') && urlCardId) {
+            // Admin editing a specific card via URL parameter
+            cardId = urlCardId;
+        } else if (user.artistCardId) {
+            // Artist or admin editing their own assigned card
+            cardId = user.artistCardId;
+        } else {
+            // Default to card 1
+            cardId = '1';
+        }
+        
         const cards  = getCards();
         const saved  = cards[cardId] || {};
+
+        // Update header badge to show which card is being edited
+        const cardBadge = document.getElementById('cardIdBadge');
+        if (cardBadge) {
+            const cardName = saved.name || `Card ${cardId}`;
+            if (roles.includes('admin') && urlCardId) {
+                cardBadge.textContent = `— Editing: ${cardName}`;
+            } else {
+                cardBadge.textContent = '';
+            }
+        }
 
         // ── Pre-fill fields ──────────────────────────────────────────────
         const $ = id => document.getElementById(id);
@@ -215,7 +247,7 @@
 
             const avatarEl = $('previewAvatarEl');
             if (avatarUrl) {
-                avatarEl.innerHTML = `<img src="${avatarUrl}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-user-circle\\'></i>'">`;
+                avatarEl.innerHTML = `<img src="${avatarUrl}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentNode.innerHTML='<i class=\\'fas fa-user-circle\\'></i>'">`;
             } else {
                 avatarEl.innerHTML = '<i class="fas fa-user-circle"></i>';
             }
@@ -268,6 +300,7 @@
                 }
             };
 
+            // Save to localStorage for immediate local updates
             const updatedCards = getCards();
             updatedCards[cardId] = data;
             localStorage.setItem(STORE_CARDS, JSON.stringify(updatedCards));
@@ -278,7 +311,30 @@
                 localStorage.setItem(STORE_CURRENT, JSON.stringify(user));
             }
 
-            notify('Artist card saved! Changes are live on the Artists page.');
+            // Save to backend API for persistence across users
+            fetch('/api/artist-cards.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cardId: cardId,
+                    cardData: data,
+                    userEmail: user.email
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    notify('Artist card saved! Changes are live on the Artists page and visible to all users.');
+                } else {
+                    notify('Saved locally, but server sync failed: ' + (result.error || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('API Error:', error);
+                notify('Saved locally, but server sync failed. Changes may not be visible to other users.', 'error');
+            });
         });
     })();
     </script>
