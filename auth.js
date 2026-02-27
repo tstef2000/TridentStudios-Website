@@ -76,13 +76,58 @@ class AuthManager {
         setTimeout(() => this.loginUser(newUser), 1500);
     }
 
-    handleForgotPassword(e) {
+    async handleForgotPassword(e) {
         e.preventDefault();
-        const email = document.getElementById('forgotEmail').value.trim();
-        const user = this.users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
-        if (!user) { this.showNotification('No account found with that email.', 'error'); return; }
-        this.showNotification('Password reset link sent to ' + email, 'success');
-        setTimeout(() => this.switchForm('login'), 2500);
+        const emailInput = document.getElementById('forgotEmail');
+        const email = emailInput.value.trim();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const btnText = submitBtn.querySelector('span');
+        const originalText = btnText.textContent;
+        
+        if (!email || !email.includes('@')) {
+            this.showNotification('Please enter a valid email address.', 'error');
+            return;
+        }
+        
+        // Disable button and show loading
+        btnText.textContent = 'Sending...';
+        submitBtn.disabled = true;
+        
+        try {
+            // Save users to backend for password reset functionality
+            const users = this.users;
+            await fetch('/api/sync-users.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ users })
+            }).catch(() => {}); // Silently fail if API unavailable
+            
+            // Request password reset
+            const response = await fetch('/api/reset-password.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'request',
+                    email: email
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                this.showNotification('If an account exists with that email, a password reset link has been sent.', 'success');
+                emailInput.value = '';
+                setTimeout(() => this.switchForm('login'), 3000);
+            } else {
+                this.showNotification(data.error || 'Failed to send reset email. Please try again.', 'error');
+            }
+        } catch (error) {
+            console.error('Password reset error:', error);
+            this.showNotification('Unable to send reset email. Please check your connection and try again.', 'error');
+        } finally {
+            btnText.textContent = originalText;
+            submitBtn.disabled = false;
+        }
     }
 
     loginUser(user) {
