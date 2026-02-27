@@ -239,12 +239,71 @@ class WebsiteEditor {
     }
 
     // ── Publish ────────────────────────────────────────────────────────────
-    publish() {
+    async publish() {
         this.savePendingChanges();
-        localStorage.setItem('trident_page_published', new Date().toISOString());
-        this.logAction('Published changes', 'Website updated');
-        this.showNotification('Changes published! Redirecting...', 'success');
-        setTimeout(() => { window.location.href = 'index.html'; }, 1600);
+        
+        // Get the current HTML from the iframe
+        let doc;
+        try { 
+            doc = this.iframe.contentWindow.document; 
+        } catch(e) { 
+            this.showNotification('Error accessing preview document', 'error');
+            return;
+        }
+
+        // Remove editor elements before publishing
+        const editorBar = doc.querySelector('.ts-edit-bar');
+        if (editorBar) editorBar.remove();
+        
+        const editorStyle = doc.getElementById('ts-editor-styles');
+        if (editorStyle) editorStyle.remove();
+
+        // Remove editor classes
+        doc.querySelectorAll('.ts-selectable, .ts-selected').forEach(el => {
+            el.classList.remove('ts-selectable', 'ts-selected');
+        });
+
+        // Reset body padding
+        doc.body.style.paddingTop = '';
+
+        // Get clean HTML
+        const htmlContent = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+
+        // Determine filename (currently editing index.html)
+        const filename = 'index.html'; // TODO: Make this dynamic based on what page is being edited
+
+        this.showNotification('Publishing changes...', 'info');
+
+        try {
+            const response = await fetch('/api/publish.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    filename: filename,
+                    html_content: htmlContent,
+                    user_email: this.currentUser.email,
+                    user_role: this.currentUser.role
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                localStorage.setItem('trident_page_published', new Date().toISOString());
+                this.logAction('Published changes', `Website updated: ${filename}`);
+                this.showNotification('✓ Changes published successfully!', 'success');
+                setTimeout(() => { window.location.href = 'index.html'; }, 1600);
+            } else {
+                this.showNotification('Publish failed: ' + (result.error || 'Unknown error'), 'error');
+            }
+        } catch (error) {
+            console.error('Publish error:', error);
+            this.showNotification('Network error. Changes saved locally only.', 'error');
+            // Fallback to local storage
+            localStorage.setItem('trident_page_published', new Date().toISOString());
+        }
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────

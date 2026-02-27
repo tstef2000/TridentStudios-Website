@@ -24,7 +24,7 @@
 const OAUTH_CONFIG = {
     discord: {
         // ← Paste your Discord Application Client ID here
-        clientId: 'YOUR_DISCORD_CLIENT_ID',
+        clientId: '1476725388012159086',
 
         get redirectUri() {
             return window.location.origin + '/login.html';
@@ -62,7 +62,7 @@ const OAUTH_CONFIG = {
 
     google: {
         // ← Paste your Google OAuth Client ID here
-        clientId: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+        clientId: '253050436591-hbjpboshh10gng4fbq47etv2c0s4a675.apps.googleusercontent.com',
     }
 };
 

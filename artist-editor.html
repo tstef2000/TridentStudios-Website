@@ -119,22 +119,6 @@
                                 <input type="url" id="artistSocialYoutube" placeholder="https://youtube.com/@...">
                             </div>
                         </div>
-
-                        <div class="profile-field">
-                            <label><i class="fab fa-twitch" style="color:#9146FF;margin-right:6px;"></i> Twitch Channel</label>
-                            <div class="input-group">
-                                <span class="input-icon"><i class="fab fa-twitch"></i></span>
-                                <input type="url" id="artistSocialTwitch" placeholder="https://twitch.tv/...">
-                            </div>
-                        </div>
-
-                        <div class="profile-field">
-                            <label><i class="fab fa-twitter" style="color:#1DA1F2;margin-right:6px;"></i> Twitter / X</label>
-                            <div class="input-group">
-                                <span class="input-icon"><i class="fab fa-twitter"></i></span>
-                                <input type="url" id="artistSocialTwitter" placeholder="https://twitter.com/...">
-                            </div>
-                        </div>
                     </div>
 
                     <button class="auth-submit-btn" id="saveArtistCardBtn" style="max-width:280px;margin-top:8px;">
@@ -159,8 +143,6 @@
                             <div class="artist-links" id="previewLinks">
                                 <a href="#" class="artist-link" id="previewLinkDiscord"><i class="fab fa-discord"></i></a>
                                 <a href="#" class="artist-link" id="previewLinkYoutube"><i class="fab fa-youtube"></i></a>
-                                <a href="#" class="artist-link" id="previewLinkTwitch"><i class="fab fa-twitch"></i></a>
-                                <a href="#" class="artist-link" id="previewLinkTwitter"><i class="fab fa-twitter"></i></a>
                             </div>
                         </div>
                     </div>
@@ -211,8 +193,6 @@
         $('artistAvatarUrl').value      = saved.avatarUrl  || '';
         $('artistSocialDiscord').value  = (saved.socials && saved.socials.discord) || '';
         $('artistSocialYoutube').value  = (saved.socials && saved.socials.youtube) || '';
-        $('artistSocialTwitch').value   = (saved.socials && saved.socials.twitch)  || '';
-        $('artistSocialTwitter').value  = (saved.socials && saved.socials.twitter) || '';
 
         // ── Bio char count ────────────────────────────────────────────────
         $('artistBio').addEventListener('input', () => {
@@ -243,24 +223,17 @@
             // Social link visibility
             const disc = $('artistSocialDiscord').value.trim();
             const yt   = $('artistSocialYoutube').value.trim();
-            const twit = $('artistSocialTwitch').value.trim();
-            const tw   = $('artistSocialTwitter').value.trim();
 
             $('previewLinkDiscord').style.display = disc ? '' : 'none';
             $('previewLinkYoutube').style.display = yt   ? '' : 'none';
-            $('previewLinkTwitch').style.display  = twit ? '' : 'none';
-            $('previewLinkTwitter').style.display = tw   ? '' : 'none';
 
             if (disc) $('previewLinkDiscord').href = disc;
             if (yt)   $('previewLinkYoutube').href = yt;
-            if (twit) $('previewLinkTwitch').href  = twit;
-            if (tw)   $('previewLinkTwitter').href = tw;
         }
 
         // Update preview on every keypress
         ['artistName','artistRoleTitle','artistDiscordTag','artistBio',
-         'artistAvatarUrl','artistSocialDiscord','artistSocialYoutube',
-         'artistSocialTwitch','artistSocialTwitter'].forEach(id => {
+         'artistAvatarUrl','artistSocialDiscord','artistSocialYoutube'].forEach(id => {
             $(id).addEventListener('input', updatePreview);
         });
 
@@ -291,9 +264,7 @@
                 avatarUrl:  $('artistAvatarUrl').value.trim(),
                 socials: {
                     discord: $('artistSocialDiscord').value.trim(),
-                    youtube: $('artistSocialYoutube').value.trim(),
-                    twitch:  $('artistSocialTwitch').value.trim(),
-                    twitter: $('artistSocialTwitter').value.trim()
+                    youtube: $('artistSocialYoutube').value.trim()
                 }
             };
 

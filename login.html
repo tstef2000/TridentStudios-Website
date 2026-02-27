@@ -126,6 +126,16 @@
                 callback: handleGoogleOAuth,
                 auto_select: false
             });
+            
+            // Render button as a fallback
+            const googleLoginBtn = document.getElementById('googleLogin');
+            if (googleLoginBtn) {
+                google.accounts.id.renderButton(googleLoginBtn, {
+                    theme: 'dark',
+                    size: 'large',
+                    text: 'signin_with'
+                });
+            }
         }
     });
     </script>

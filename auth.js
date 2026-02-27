@@ -1,3 +1,28 @@
+// ============================================================
+// Google OAuth Callback Handler
+// ============================================================
+function handleGoogleOAuth(response) {
+    // response.credential is the JWT token from Google
+    if (!response.credential) {
+        console.error('No credential in Google response');
+        return;
+    }
+
+    // Decode the JWT (Google provides the payload in base64)
+    const base64Url = response.credential.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    
+    const googleUser = JSON.parse(jsonPayload);
+    
+    // Pass to AuthManager for processing
+    if (window.authManager) {
+        window.authManager.handleGoogleOAuthResponse(googleUser);
+    }
+}
+
 class AuthManager {
     constructor() {
         this.users = this.loadUsers();
@@ -5,6 +30,8 @@ class AuthManager {
         this.initializeEventListeners();
         // Handle Discord OAuth token in URL hash (after redirect back from Discord)
         this.handleOAuthCallback();
+        // Store reference globally for Google callback
+        window.authManager = this;
     }
 
     initializeEventListeners() {
@@ -101,6 +128,68 @@ class AuthManager {
     }
 
     // ── OAuth: Google ────────────────────────────────────────────────────────
+    handleGoogleOAuthResponse(googleUser) {
+        this.showNotification('Signing you in with Google...', 'info');
+        
+        try {
+            if (!googleUser || !googleUser.sub) {
+                this.showNotification('Failed to verify Google identity', 'error');
+                return;
+            }
+            
+            // Extract user info from Google JWT
+            const googleOAuthData = {
+                oauthId: googleUser.sub,
+                email: googleUser.email || '',
+                username: googleUser.name || googleUser.email.split('@')[0],
+                avatarUrl: googleUser.picture || '',
+                provider: 'google'
+            };
+            
+            // Find existing account linked to this Google ID, or by email, or create new
+            let user = this.users.find(u => u.oauthId === googleOAuthData.oauthId && u.provider === 'google');
+            
+            if (!user && googleOAuthData.email) {
+                user = this.users.find(u => u.email && u.email.toLowerCase() === googleOAuthData.email.toLowerCase());
+            }
+            
+            if (user) {
+                // Update OAuth data on existing account
+                user.provider = 'google';
+                user.oauthId = googleOAuthData.oauthId;
+                if (googleOAuthData.avatarUrl) {
+                    user.avatarUrl = googleOAuthData.avatarUrl;
+                }
+                if (!user.username && googleOAuthData.username) {
+                    user.username = googleOAuthData.username;
+                }
+                this.saveUsers();
+            } else {
+                // Create new viewer account
+                user = {
+                    id: Date.now().toString(),
+                    username: googleOAuthData.username,
+                    email: googleOAuthData.email,
+                    password: null,
+                    role: 'viewer',
+                    provider: 'google',
+                    oauthId: googleOAuthData.oauthId,
+                    avatarUrl: googleOAuthData.avatarUrl,
+                    createdAt: new Date().toISOString(),
+                    lastLogin: null
+                };
+                this.users.push(user);
+                this.saveUsers();
+            }
+            
+            this.loginUser(user);
+        } catch (err) {
+            console.error('Google OAuth error:', err);
+            this.showNotification('Google login failed. Please try again.', 'error');
+        }
+    }
+
+    // ── OAuth: Google (Button Handler) ───────────────────────────────────────
     startGoogleOAuth() {
         if (typeof OAUTH_CONFIG === 'undefined') {
             this.showNotification('OAuth not configured. Add your Client IDs to oauth-config.js', 'error');
@@ -111,7 +200,16 @@ class AuthManager {
             return;
         }
         if (typeof google !== 'undefined' && google.accounts) {
-            google.accounts.id.prompt();
+            // Show the Google One Tap dialog
+            google.accounts.id.prompt((notification) => {
+                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                    // Fallback: trigger the sign-in flow
+                    google.accounts.id.renderButton(
+                        document.getElementById('googleLogin'),
+                        { theme: 'dark', size: 'large' }
+                    );
+                }
+            });
         } else {
             this.showNotification('Google Sign-In library not loaded', 'error');
         }

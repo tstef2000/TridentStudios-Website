@@ -375,11 +375,7 @@ class AdminPanelManager {
         // Collect social links
         const socials = {
             discord:   document.getElementById('socialDiscord').value.trim(),
-            youtube:   document.getElementById('socialYoutube').value.trim(),
-            twitch:    document.getElementById('socialTwitch').value.trim(),
-            twitter:   document.getElementById('socialTwitter').value.trim(),
-            instagram: document.getElementById('socialInstagram').value.trim(),
-            tiktok:    document.getElementById('socialTiktok').value.trim()
+            youtube:   document.getElementById('socialYoutube').value.trim()
         };
 
         // Also update discord link in settings from socials if provided
@@ -413,10 +409,6 @@ class AdminPanelManager {
         const socials = JSON.parse(localStorage.getItem('trident_social_links') || '{}');
         if (socials.discord)   document.getElementById('socialDiscord').value   = socials.discord;
         if (socials.youtube)   document.getElementById('socialYoutube').value   = socials.youtube;
-        if (socials.twitch)    document.getElementById('socialTwitch').value    = socials.twitch;
-        if (socials.twitter)   document.getElementById('socialTwitter').value   = socials.twitter;
-        if (socials.instagram) document.getElementById('socialInstagram').value = socials.instagram;
-        if (socials.tiktok)    document.getElementById('socialTiktok').value    = socials.tiktok;
     }
 
     logAction(action, details) {

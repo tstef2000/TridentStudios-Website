@@ -111,6 +111,39 @@
                             <span class="stat-change">+34% increase</span>
                         </div>
                     </div>
+
+                    <div class="stat-card" onclick="document.getElementById('Website Visits').scrollIntoView({behavior:'smooth'}); document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active')); document.getElementById('Website Visits').classList.add('active');" style="cursor:pointer;">
+                        <div class="stat-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Website Visits</h3>
+                            <p class="stat-value">Click</p>
+                            <span class="stat-change">View monthly trend →</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" onclick="document.getElementById('Audit Log').scrollIntoView({behavior:'smooth'}); document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active')); document.getElementById('Audit Log').classList.add('active');" style="cursor:pointer;">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Audit Log</h3>
+                            <p class="stat-value">Click</p>
+                            <span class="stat-change">View activity →</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" onclick="document.getElementById('System Settings').scrollIntoView({behavior:'smooth'}); document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active')); document.getElementById('System Settings').classList.add('active');" style="cursor:pointer;">
+                        <div class="stat-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>System Settings</h3>
+                            <p class="stat-value">Click</p>
+                            <span class="stat-change">Manage settings →</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="dashboard-sections">
@@ -325,7 +358,7 @@
                         <div class="setting-item">
                             <label>
                                 <span>Discord Server Link</span>
-                                <input type="url" id="discordLinkInput" value="https://discord.gg/">
+                                <input type="url" id="discordLinkInput" value="https://discord.gg/FdhYmQu8rb">
                             </label>
                         </div>
                     </div>
@@ -367,37 +400,13 @@
                             <div class="setting-item">
                                 <label>
                                     <span><i class="fab fa-discord" style="color: #5865F2; margin-right: 6px;"></i> Discord Invite</span>
-                                    <input type="url" id="socialDiscord" placeholder="https://discord.gg/...">
+                                    <input type="url" id="socialDiscord" placeholder="https://discord.gg/FdhYmQu8rb">
                                 </label>
                             </div>
                             <div class="setting-item">
                                 <label>
                                     <span><i class="fab fa-youtube" style="color: #FF0000; margin-right: 6px;"></i> YouTube Channel</span>
-                                    <input type="url" id="socialYoutube" placeholder="https://youtube.com/@...">
-                                </label>
-                            </div>
-                            <div class="setting-item">
-                                <label>
-                                    <span><i class="fab fa-twitch" style="color: #9146FF; margin-right: 6px;"></i> Twitch Channel</span>
-                                    <input type="url" id="socialTwitch" placeholder="https://twitch.tv/...">
-                                </label>
-                            </div>
-                            <div class="setting-item">
-                                <label>
-                                    <span><i class="fab fa-twitter" style="color: #1DA1F2; margin-right: 6px;"></i> Twitter / X</span>
-                                    <input type="url" id="socialTwitter" placeholder="https://twitter.com/...">
-                                </label>
-                            </div>
-                            <div class="setting-item">
-                                <label>
-                                    <span><i class="fab fa-instagram" style="color: #E1306C; margin-right: 6px;"></i> Instagram</span>
-                                    <input type="url" id="socialInstagram" placeholder="https://instagram.com/...">
-                                </label>
-                            </div>
-                            <div class="setting-item">
-                                <label>
-                                    <span><i class="fab fa-tiktok" style="color: #69C9D0; margin-right: 6px;"></i> TikTok</span>
-                                    <input type="url" id="socialTiktok" placeholder="https://tiktok.com/@...">
+                                    <input type="url" id="socialYoutube" placeholder="https://www.youtube.com/@TridentGraphic">>
                                 </label>
                             </div>
                         </div>

@@ -47,10 +47,8 @@
             <h1 class="hero-title">TRIDENT STUDIOS</h1>
             <p class="hero-subtitle">Elite Rust Content Creation & Design Studio</p>
             <div class="hero-socials">
-                <a href="https://discord.gg/YOUR_DISCORD" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
-                <a href="#" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="#" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
-                <a href="#" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="https://discord.gg/FdhYmQu8rb" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+                <a href="https://www.youtube.com/@TridentGraphic" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
             </div>
             <a href="socials.html" class="socials-button">Join Our Community</a>
         </div>
@@ -214,11 +212,11 @@
                     <p>Our mission is to elevate the Rust community's visual presence through high-quality, custom-designed graphics and videos that capture the essence of your server or brand.</p>
                     <div class="about-stats">
                         <div class="stat">
-                            <h4>500+</h4>
+                            <h4>100+</h4>
                             <p>Projects Completed</p>
                         </div>
                         <div class="stat">
-                            <h4>300+</h4>
+                            <h4>100+</h4>
                             <p>Happy Clients</p>
                         </div>
                         <div class="stat">
@@ -266,9 +264,9 @@
                     <p>Contact us today for a free consultation and quote. We're here to help bring your vision to life.</p>
                     <div class="contact-methods">
                         <div class="contact-method">
-                            <i class="fas fa-envelope"></i>
+                            <i class="fas fa-comments"></i>
                             <div>
-                                <h4>Email</h4>
+                                <h4>Message</h4>
                                 <p>moonkiegfx on Discord</p>
                             </div>
                         </div>
@@ -363,9 +361,7 @@
         try { socials = JSON.parse(localStorage.getItem('trident_social_links') || '{}'); } catch(e) {}
         var socialMap = {
             discord:   '.hero-socials a[title="Discord"]',
-            youtube:   '.hero-socials a[title="YouTube"]',
-            twitch:    '.hero-socials a[title="Twitch"]',
-            twitter:   '.hero-socials a[title="Twitter"]'
+            youtube:   '.hero-socials a[title="YouTube"]'
         };
         Object.keys(socialMap).forEach(function(key) {
             if (socials[key]) {
