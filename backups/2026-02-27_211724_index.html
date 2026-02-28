@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRIDENT STUDIOS - Rust Content Creation</title>
+    <title>Trident Studios - Rust Content Creation</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
-<body style="">
+<body>
     <!-- Navigation -->
-    <nav class="navbar" style="box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.1);">
+    <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
                 <img src="images/trident-logo.png" alt="Trident Studios" class="logo-img">
@@ -23,35 +24,10 @@
                 <li><a href="socials.html" class="nav-link">Socials</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
-            <div class="nav-user-pill" role="button" aria-label="User menu">
-            <div class="nav-user-avatar nav-user-avatar-initial">
-                T
-            </div>
-            <div class="nav-user-meta">
-                <span class="nav-user-name">Trystan</span>
-                <span class="nav-user-role">Admin</span>
-            </div>
-            <i class="fas fa-chevron-down nav-user-caret"></i>
-
-            <div class="nav-user-dropdown" role="menu">
-                <div class="nav-dd-header">
-                    <div class="nav-dd-avatar nav-dd-avatar-initial">
-                        T
-                    </div>
-                    <div>
-                        <strong>Trystan</strong>
-                        <p class="">stefanowicz.trystan@gmail.com</p>
-                    </div>
-                </div>
-                <div class="nav-dd-divider"></div>
-                <a href="profile.html" class="nav-dd-item"><i class="fas fa-user-cog"></i> My Profile</a>
-                <a href="dashboard.html" class="nav-dd-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                <div class="nav-dd-divider"></div>
-                <a href="#" class="nav-dd-item nav-dd-logout" id="navLogoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Sign Out
-                </a>
-            </div>
-        </div>
+            <button class="login-btn" id="loginBtn" title="Login">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Login</span>
+            </button>
             <div class="hamburger">
                 <span></span>
                 <span></span>
@@ -62,41 +38,41 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
-        <video class="hero-video" autoplay="" muted="" loop="">
+        <video class="hero-video" autoplay muted loop>
             <source src="videos/hero-bg.mp4" type="video/mp4">
             <source src="videos/hero-bg.webm" type="video/webm">
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1 class="hero-title">TRIDENT STUDIOS</h1>
-            <p class="hero-subtitle">Where your dreams become reality</p>
+            <p class="hero-subtitle">Elite Rust Content Creation & Design Studio</p>
             <div class="hero-socials">
-                <a href="https://discord.gg/FdhYmQu8rb" target="_blank" title="Discord" class=""><i class="fab fa-discord"></i></a>
-                <a href="https://www.youtube.com/@TridentGraphic" target="_blank" title="YouTube" class=""><i class="fab fa-youtube"></i></a>
+                <a href="https://discord.gg/dPj6S5Vc2A" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+                <a href="https://www.youtube.com/@TridentGraphic" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
             </div>
             <a href="socials.html" class="socials-button">Join Our Community</a>
         </div>
         <div class="hero-background">
-            <div class="particle particle-1" style="transform: translateY(224px);"></div>
-            <div class="particle particle-2" style="transform: translateY(448px);"></div>
-            <div class="particle particle-3" style="transform: translateY(672px);"></div>
+            <div class="particle particle-1"></div>
+            <div class="particle particle-2"></div>
+            <div class="particle particle-3"></div>
         </div>
     </section>
 
     <!-- Services Section -->
     <section id="services" class="services">
-        <video class="section-bg-video" autoplay="" muted="" loop="" playsinline="">
+        <video class="section-bg-video" autoplay muted loop playsinline>
             <source src="videos/hero-bg.mp4" type="video/mp4">
         </video>
         <div class="container">
             <h2 class="section-title">Our Services</h2>
             <div class="services-grid">
-                <div class="service-card" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
+                <div class="service-card">
                     <div class="service-icon">
                         <i class="fas fa-icons"></i>
                     </div>
-                    <h3 class="">Logo Design</h3>
-                    <p class="">Custom, professional logos for clans, servers, and communities. We create unique designs that stand out in the Rust ecosystem.</p>
+                    <h3>Logo Design</h3>
+                    <p>Custom, professional logos for clans, servers, and communities. We create unique designs that stand out in the Rust ecosystem.</p>
                     <ul class="service-list">
                         <li>✓ Clan Logos</li>
                         <li>✓ Server Branding</li>
@@ -105,12 +81,12 @@
                     </ul>
                 </div>
 
-                <div class="service-card featured" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
+                <div class="service-card featured">
                     <div class="service-icon">
                         <i class="fas fa-film"></i>
                     </div>
-                    <h3 class="">Trailer Production</h3>
-                    <p class="">High-impact video trailers showcasing server features, events, and gameplay highlights with professional editing and effects.</p>
+                    <h3>Trailer Production</h3>
+                    <p>High-impact video trailers showcasing server features, events, and gameplay highlights with professional editing and effects.</p>
                     <ul class="service-list">
                         <li>✓ Server Trailers</li>
                         <li>✓ Event Promotion</li>
@@ -119,12 +95,12 @@
                     </ul>
                 </div>
 
-                <div class="service-card" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
+                <div class="service-card">
                     <div class="service-icon">
                         <i class="fas fa-palette"></i>
                     </div>
-                    <h3 class="">Key Art &amp; Graphics</h3>
-                    <p class="">Eye-catching promotional artwork and graphics for banners, thumbnails, social media, and in-game materials.</p>
+                    <h3>Key Art & Graphics</h3>
+                    <p>Eye-catching promotional artwork and graphics for banners, thumbnails, social media, and in-game materials.</p>
                     <ul class="service-list">
                         <li>✓ Social Media Graphics</li>
                         <li>✓ YouTube Thumbnails</li>
@@ -133,12 +109,12 @@
                     </ul>
                 </div>
 
-                <div class="service-card" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
+                <div class="service-card">
                     <div class="service-icon">
                         <i class="fas fa-star"></i>
                     </div>
-                    <h3 class="">Brand Identity</h3>
-                    <p class="">Complete branding packages including style guides, color palettes, and cohesive visual identity systems.</p>
+                    <h3>Brand Identity</h3>
+                    <p>Complete branding packages including style guides, color palettes, and cohesive visual identity systems.</p>
                     <ul class="service-list">
                         <li>✓ Style Guides</li>
                         <li>✓ Color Palettes</li>
@@ -147,12 +123,12 @@
                     </ul>
                 </div>
 
-                <div class="service-card" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
+                <div class="service-card">
                     <div class="service-icon">
                         <i class="fas fa-gem"></i>
                     </div>
-                    <h3 class="">Premium Packages</h3>
-                    <p class="">Full-service creative solutions tailored to your unique needs with dedicated support and revisions.</p>
+                    <h3>Premium Packages</h3>
+                    <p>Full-service creative solutions tailored to your unique needs with dedicated support and revisions.</p>
                     <ul class="service-list">
                         <li>✓ Custom Projects</li>
                         <li>✓ Unlimited Revisions</li>
@@ -166,58 +142,58 @@
 
     <!-- Portfolio Section -->
     <section id="portfolio" class="portfolio">
-        <video class="section-bg-video" autoplay="" muted="" loop="" playsinline="">
+        <video class="section-bg-video" autoplay muted loop playsinline>
             <source src="videos/hero-bg.mp4" type="video/mp4">
         </video>
         <div class="container">
             <h2 class="section-title">Portfolio Showcase</h2>
             <div class="portfolio-grid">
-                <div class="portfolio-item" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
+                <div class="portfolio-item">
                     <div class="portfolio-image">
                         <i class="fas fa-image"></i>
                     </div>
-                    <h3 class="">Clan Branding Package</h3>
-                    <p class="">Complete visual identity for a 200+ member Rust clan</p>
+                    <h3>Clan Branding Package</h3>
+                    <p>Complete visual identity for a 200+ member Rust clan</p>
                 </div>
 
-                <div class="portfolio-item" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
+                <div class="portfolio-item">
                     <div class="portfolio-image">
                         <i class="fas fa-image"></i>
                     </div>
-                    <h3 class="">Server Launch Trailer</h3>
-                    <p class="">4K cinematic trailer for hardcore RP server launch</p>
+                    <h3>Server Launch Trailer</h3>
+                    <p>4K cinematic trailer for hardcore RP server launch</p>
                 </div>
 
-                <div class="portfolio-item" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
+                <div class="portfolio-item">
                     <div class="portfolio-image">
                         <i class="fas fa-image"></i>
                     </div>
-                    <h3 class="">Tournament Graphics</h3>
-                    <p class="">Professional branding for Rust esports tournament</p>
+                    <h3>Tournament Graphics</h3>
+                    <p>Professional branding for Rust esports tournament</p>
                 </div>
 
-                <div class="portfolio-item" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
+                <div class="portfolio-item">
                     <div class="portfolio-image">
                         <i class="fas fa-image"></i>
                     </div>
-                    <h3 class="">Discord Community Design</h3>
-                    <p class="">Custom Discord server with 50+ custom emojis</p>
+                    <h3>Discord Community Design</h3>
+                    <p>Custom Discord server with 50+ custom emojis</p>
                 </div>
 
-                <div class="portfolio-item" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
+                <div class="portfolio-item">
                     <div class="portfolio-image">
                         <i class="fas fa-image"></i>
                     </div>
-                    <h3 class="">YouTube Channel Branding</h3>
-                    <p class="">Channel art, thumbnails, and intros for content creators</p>
+                    <h3>YouTube Channel Branding</h3>
+                    <p>Channel art, thumbnails, and intros for content creators</p>
                 </div>
 
-                <div class="portfolio-item" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
+                <div class="portfolio-item">
                     <div class="portfolio-image">
                         <i class="fas fa-image"></i>
                     </div>
-                    <h3 class="">Event Promotional Campaign</h3>
-                    <p class="">Multi-platform graphics for seasonal server events</p>
+                    <h3>Event Promotional Campaign</h3>
+                    <p>Multi-platform graphics for seasonal server events</p>
                 </div>
             </div>
         </div>
@@ -225,50 +201,50 @@
 
     <!-- About Section -->
     <section id="about" class="about">
-        <video class="section-bg-video" autoplay="" muted="" loop="" playsinline="">
+        <video class="section-bg-video" autoplay muted loop playsinline>
             <source src="videos/hero-bg.mp4" type="video/mp4">
         </video>
         <div class="container">
             <h2 class="section-title">About Trident Studios</h2>
-            <div class="about-content" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
+            <div class="about-content">
                 <div class="about-text">
-                    <p class="">Founded by passionate Rust players tired of the same old copy and paste designs, Trident Studios specializes in creating professional, premium content for the Rust gaming community. With years of experience in graphic design, video production, and branding, we understand the unique needs of Rust servers, clans, and content creators.</p>
-                    <p class="">Our mission is to elevate the Rust community's visual presence through high-quality, custom-designed graphics and videos that capture the essence of your server or brand.</p>
+                    <p>Founded by passionate Rust enthusiasts, Trident Studios specializes in creating professional, premium content for the Rust gaming community. With years of experience in graphic design, video production, and branding, we understand the unique needs of Rust servers, clans, and content creators.</p>
+                    <p>Our mission is to elevate the Rust community's visual presence through high-quality, custom-designed graphics and videos that capture the essence of your server or brand.</p>
                     <div class="about-stats">
                         <div class="stat">
-                            <h4 class="">100+</h4>
-                            <p class="">Projects Completed</p>
+                            <h4>100+</h4>
+                            <p>Projects Completed</p>
                         </div>
                         <div class="stat">
-                            <h4 class="">100+</h4>
-                            <p class="">Happy Clients</p>
+                            <h4>100+</h4>
+                            <p>Happy Clients</p>
                         </div>
                         <div class="stat">
-                            <h4 class="">24/7</h4>
-                            <p class="">Support Available</p>
+                            <h4>24/7</h4>
+                            <p>Support Available</p>
                         </div>
                     </div>
                 </div>
                 <div class="about-features">
                     <div class="feature-item">
                         <i class="fas fa-check-circle"></i>
-                        <h4 class="">Professional Quality</h4>
-                        <p class="">Industry-standard design and production practices</p>
+                        <h4>Professional Quality</h4>
+                        <p>Industry-standard design and production practices</p>
                     </div>
                     <div class="feature-item">
                         <i class="fas fa-check-circle"></i>
-                        <h4 class="">Fast Turnaround</h4>
-                        <p class="">Quick delivery without compromising quality</p>
+                        <h4>Fast Turnaround</h4>
+                        <p>Quick delivery without compromising quality</p>
                     </div>
                     <div class="feature-item">
                         <i class="fas fa-check-circle"></i>
-                        <h4 class="">Community Focused</h4>
-                        <p class="">Deep understanding of Rust community needs</p>
+                        <h4>Community Focused</h4>
+                        <p>Deep understanding of Rust community needs</p>
                     </div>
                     <div class="feature-item">
                         <i class="fas fa-check-circle"></i>
-                        <h4 class="">Affordable Pricing</h4>
-                        <p class="">Competitive rates for quality work</p>
+                        <h4>Affordable Pricing</h4>
+                        <p>Competitive rates for quality work</p>
                     </div>
                 </div>
             </div>
@@ -277,35 +253,35 @@
 
     <!-- Contact Section -->
     <section id="contact" class="contact">
-        <video class="section-bg-video" autoplay="" muted="" loop="" playsinline="">
+        <video class="section-bg-video" autoplay muted loop playsinline>
             <source src="videos/hero-bg.mp4" type="video/mp4">
         </video>
         <div class="container">
             <h2 class="section-title">Get In Touch</h2>
             <div class="contact-content">
                 <div class="contact-info">
-                    <h3 class="">Ready to elevate your Rust brand?</h3>
-                    <p class="">Contact us today for a free consultation and quote. We're here to help bring your vision to life.</p>
+                    <h3>Ready to elevate your Rust brand?</h3>
+                    <p>Contact us today for a free consultation and quote. We're here to help bring your vision to life.</p>
                     <div class="contact-methods">
                         <div class="contact-method">
                             <i class="fas fa-comments"></i>
                             <div>
-                                <h4 class="">Message</h4>
-                                <p class="">Make a ticket in our discord</p>
+                                <h4>Message</h4>
+                                <p>moonkiegfx on Discord</p>
                             </div>
                         </div>
                         <div class="contact-method">
                             <i class="fas fa-discord"></i>
                             <div>
-                                <h4 class="">Discord</h4>
-                                <p class="">Join our community server</p>
+                                <h4>Discord</h4>
+                                <p>Join our community server</p>
                             </div>
                         </div>
                         <div class="contact-method">
                             <i class="fas fa-clock"></i>
                             <div>
-                                <h4 class="">Response Time</h4>
-                                <p class="">Usually within 24 hours</p>
+                                <h4>Response Time</h4>
+                                <p>Usually within 24 hours</p>
                             </div>
                         </div>
                     </div>
@@ -313,27 +289,27 @@
 
                 <form class="contact-form" id="contactForm">
                     <div class="form-group">
-                        <input type="text" placeholder="Your Name" required="">
+                        <input type="text" placeholder="Your Name" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" placeholder="Your Email" required="">
+                        <input type="email" placeholder="Your Email" required>
                     </div>
                     <div class="form-group">
                         <input type="text" placeholder="Discord Name">
                     </div>
                     <div class="form-group">
-                        <select required="">
+                        <select required>
                             <option value="">Select Service</option>
                             <option value="logo">Logo Design</option>
                             <option value="trailer">Trailer Production</option>
-                            <option value="graphics">Key Art &amp; Graphics</option>
+                            <option value="graphics">Key Art & Graphics</option>
                             <option value="branding">Brand Identity</option>
                             <option value="discord">Discord Design</option>
                             <option value="other">Other</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <textarea placeholder="Tell us about your project..." rows="5" required=""></textarea>
+                        <textarea placeholder="Tell us about your project..." rows="5" required></textarea>
                     </div>
                     <button type="submit" class="submit-button">Send Inquiry</button>
                 </form>
@@ -346,32 +322,32 @@
         <div class="footer-inner">
             <div class="footer-brand">
                 <img src="images/trident-logo.png" alt="Trident Studios" class="footer-logo">
-                <h3 class="">TRIDENT STUDIOS</h3>
-                <p class="">Premium Rust content creation &amp; graphic design studio.</p>
+                <h3>TRIDENT STUDIOS</h3>
+                <p>Premium Rust content creation &amp; graphic design studio.</p>
             </div>
             <div class="footer-links">
                 <div class="footer-col">
-                    <h4 class="">Navigation</h4>
+                    <h4>Navigation</h4>
                     <ul>
-                        <li><a href="#home" class="">Home</a></li>
-                        <li><a href="#services" class="">Services</a></li>
-                        <li><a href="artists.html" class="">Artists</a></li>
-                        <li><a href="#about" class="">About</a></li>
-                        <li><a href="socials.html" class="">Socials</a></li>
-                        <li><a href="#contact" class="">Contact</a></li>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="artists.html">Artists</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="socials.html">Socials</a></li>
+                        <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h4 class="">Legal</h4>
+                    <h4>Legal</h4>
                     <ul>
-                        <li><a href="terms-of-service.html" class="">Terms &amp; Conditions</a></li>
-                        <li><a href="privacy-policy.html" class="">Privacy Policy</a></li>
+                        <li><a href="terms-of-service.html">Terms &amp; Conditions</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <p class="">© 2026 Trident Studios. All rights reserved. &nbsp;|&nbsp; All work is a trademark of Trident Studios.</p>
+            <p>&copy; 2026 Trident Studios. All rights reserved. &nbsp;|&nbsp; All work is a trademark of Trident Studios.</p>
         </div>
     </footer>
 
@@ -409,6 +385,5 @@
     })();
     </script>
     <script src="nav-auth.js"></script>
-
-
-</body></html>
+</body>
+</html>
