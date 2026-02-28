@@ -19,7 +19,7 @@ const ARTIST_CONFIG = {
             name: "Rose",
             roleTitle: "Logo Designer & Branding",
             discordTag: "@boringrose",
-            bio: "Specializing in custom logos and brand identities for gaming communities.",
+            bio: "Specializing in custom quality graphics & cinematics.",
             avatarUrl: "https://i.postimg.cc/76jTH2cW/boringrose.png",
             socials: {
                 discord: "https://discord.gg/dPj6S5Vc2A",
@@ -30,8 +30,8 @@ const ARTIST_CONFIG = {
             id: "2",
             name: "Moonkie",
             roleTitle: "Founder, Artist & Editor",
-            discordTag: "@VideoMaster#0002",
-            bio: "Creates stunning video trailers and cinematic gameplay highlights.",
+            discordTag: "@moonkiegfx",
+            bio: "Specializing in high-quality graphics, video editing, and content creation.",
             avatarUrl: "https://i.postimg.cc/SsdtHmvN/Untitled.png", // Leave empty to use default icon
             socials: {
                 discord: "https://discord.gg/dPj6S5Vc2A",

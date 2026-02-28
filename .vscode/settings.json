@@ -1,4 +1,5 @@
 {
     "diffEditor.maxFileSize": 0,
-    "git.statusLimit": 0
+    "git.statusLimit": 0,
+    "sftp.downloadWhenOpenInRemoteExplorer": true
 }
