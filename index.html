@@ -139,48 +139,8 @@
     <section id="portfolio" class="portfolio">
         <div class="container">
             <h2 class="section-title">Portfolio Showcase</h2>
-            <div class="portfolio-grid">
-                <div class="portfolio-item" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
-                    <div class="portfolio-image">
-                        <i class="fas fa-image"></i>
-                    </div>
-                    <h3 class="">Clan Branding Package</h3>
-                    <p class="">Complete visual identity for a 200+ member Rust clan</p>
-                </div>
-
-                <div class="portfolio-item" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
-                    <div class="portfolio-image">
-                        <i class="fas fa-image"></i>
-                    </div>
-                    <h3 class="">Server Launch Trailer</h3>
-                    <p class="">4K cinematic trailer for hardcore RP server launch</p>
-                </div>
-
-                <div class="portfolio-item" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
-                    <div class="portfolio-image">
-                        <i class="fas fa-image"></i>
-                    </div>
-                    <h3 class="">Tournament Graphics</h3>
-                    <p class="">Professional branding for Rust esports tournament</p>
-                </div>
-
-                <div class="portfolio-item" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
-                    <div class="portfolio-image">
-                        <i class="fas fa-image"></i>
-                    </div>
-                    <h3 class="">Discord Community Design</h3>
-                    <p class="">Custom Discord server with 50+ custom emojis</p>
-                </div>
-
-                <div class="portfolio-item" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
-                    <div class="portfolio-image">
-                        <i class="fas fa-image"></i>
-                    </div>
-                    <h3 class="">YouTube Channel Branding</h3>
-                    <p class="">Channel art, thumbnails, and intros for content creators</p>
-                </div>
-
-
+            <div class="portfolio-grid" id="portfolioGrid">
+                <!-- Portfolio items will be generated here by JavaScript -->
             </div>
         </div>
     </section>
@@ -366,5 +326,98 @@
     </script>
     <script src="nav-auth.js"></script>
 
+    <!-- Portfolio Configuration -->
+    <script>
+    (function() {
+        // =====================================================
+        // PORTFOLIO CONFIGURATION
+        // Customize your portfolio items below
+        // =====================================================
+
+        const portfolioItems = [
+            {
+                title: "Clan Branding Package",
+                description: "Complete visual identity for a 200+ member Rust clan",
+                image: "icon", // Use "icon" for FontAwesome icon, or provide image URL
+                icon: "fas fa-image", // FontAwesome icon class (only used if image is "icon")
+                link: null // Optional: URL to link to (e.g., "https://example.com")
+            },
+            {
+                title: "Server Launch Trailer",
+                description: "4K cinematic trailer for hardcore RP server launch",
+                image: "icon",
+                icon: "fas fa-video",
+                link: null
+            },
+            {
+                title: "Tournament Graphics",
+                description: "Professional branding for Rust esports tournament",
+                image: "icon",
+                icon: "fas fa-trophy",
+                link: null
+            },
+            {
+                title: "Discord Community Design",
+                description: "Custom Discord server with 50+ custom emojis",
+                image: "icon",
+                icon: "fab fa-discord",
+                link: null
+            },
+            {
+                title: "YouTube Channel Branding",
+                description: "Channel art, thumbnails, and intros for content creators",
+                image: "icon",
+                icon: "fab fa-youtube",
+                link: null
+            }
+            // Add more items here following the same format
+        ];
+
+        // =====================================================
+        // DO NOT EDIT BELOW THIS LINE
+        // =====================================================
+
+        function generatePortfolioItems() {
+            const grid = document.getElementById('portfolioGrid');
+            if (!grid) return;
+
+            portfolioItems.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'portfolio-item';
+                itemDiv.style.opacity = '0';
+                itemDiv.style.animation = `0.8s ease ${index * 0.1}s 1 normal forwards running cardSlideIn`;
+
+                let imageHtml = '';
+                if (item.image === 'icon') {
+                    imageHtml = `<i class="${item.icon}"></i>`;
+                } else {
+                    imageHtml = `<img src="${item.image}" alt="${item.title}" onerror="this.style.display='none'">`;
+                }
+
+                const linkStart = item.link ? `<a href="${item.link}" target="_blank" rel="noopener noreferrer">` : '';
+                const linkEnd = item.link ? '</a>' : '';
+
+                itemDiv.innerHTML = `
+                    ${linkStart}
+                    <div class="portfolio-image">
+                        ${imageHtml}
+                    </div>
+                    <h3 class="">${item.title}</h3>
+                    <p class="">${item.description}</p>
+                    ${linkEnd}
+                `;
+
+                grid.appendChild(itemDiv);
+            });
+        }
+
+        // Generate portfolio items when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', generatePortfolioItems);
+        } else {
+            generatePortfolioItems();
+        }
+    })();
+    </script>
 
 </body></html>
