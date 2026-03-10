@@ -78,6 +78,7 @@
                             <label>Image URL</label>
                             <div class="input-group">
                                 <span class="input-icon"><i class="fas fa-link"></i></span>
+                                <input type="url" id="artistAvatarUrl" placeholder="https://example.com/avatar.jpg">
                             </div>
                         </div>
 
@@ -171,6 +172,28 @@
             return ['viewer'];
         }
 
+        // Load card data from API, fallback to localStorage
+        async function loadCardData(cardId) {
+            try {
+                const response = await fetch('/api/artist-cards.php');
+                if (response.ok) {
+                    const allCards = await response.json();
+                    const cardData = allCards[cardId];
+                    if (cardData) {
+                        // Update localStorage with server data
+                        const updatedCards = getCards();
+                        updatedCards[cardId] = cardData;
+                        localStorage.setItem(STORE_CARDS, JSON.stringify(updatedCards));
+                        return cardData;
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to load from API, using localStorage:', error);
+            }
+            // Fallback to localStorage
+            return getCards()[cardId] || {};
+        }
+
         const user = getUser();
         const roles = getUserRoles(user);
         if (!user || (!roles.includes('artist') && !roles.includes('admin'))) {
@@ -194,8 +217,8 @@
             cardId = '1';
         }
         
-        const cards  = getCards();
-        const saved  = cards[cardId] || {};
+        // Load card data and initialize editor
+        loadCardData(cardId).then(saved => {
 
         // Update header badge to show which card is being edited
         const cardBadge = document.getElementById('cardIdBadge');
@@ -328,6 +351,7 @@
                 notify('Saved locally, but server sync failed. Changes may not be visible to other users.', 'error');
             });
         });
+        }); // Close the loadCardData then block
     })();
     </script>
 </body>

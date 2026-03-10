@@ -101,10 +101,10 @@
                         <i class="fas fa-user-circle"></i>
                     </div>
                     <div class="artist-info">
-                        <h2 class="artist-name">Artist Four</h2>
-                        <p class="artist-role">UI/UX Designer</p>
-                        <p class="artist-discord">@UIDesigner#0004</p>
-                        <p class="artist-bio">Designs beautiful Discord servers and in-game UI elements.</p>
+                        <h2 class="artist-name">Washed</h2>
+                        <p class="artist-role">Senior Artist</p>
+                        <p class="artist-discord">@1gh4</p>
+                        <p class="artist-bio">Specializes in creating 3D Designs and stunning stickers</p>
                         <div class="artist-links">
                             <a href="https://discord.gg/dPj6S5Vc2A" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
                             <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
@@ -199,45 +199,45 @@
             return ['viewer'];
         }
 
-        // Load artist data from config file
-        if (typeof ARTIST_CONFIG !== 'undefined' && ARTIST_CONFIG.artistsPage) {
-            // Convert config format to card format and render
-            var cards = {};
-            ARTIST_CONFIG.artistsPage.forEach(function(artist) {
-                cards[artist.id] = {
-                    name: artist.name,
-                    roleTitle: artist.roleTitle,
-                    discordTag: artist.discordTag,
-                    bio: artist.bio,
-                    avatarUrl: artist.avatarUrl,
-                    socials: artist.socials
-                };
-            });
-            
-            // Sync to localStorage for compatibility
-            localStorage.setItem(STORE, JSON.stringify(cards));
-            
-            renderArtistCards(cards);
-        } else {
-            // Fallback: Try to fetch from backend API if config not available
-            console.log('Config file not loaded, attempting API fallback...');
-            fetch('/api/artist-cards.php')
-                .then(function(response) { return response.json(); })
-                .then(function(serverCards) {
-                    localStorage.setItem(STORE, JSON.stringify(serverCards));
-                    renderArtistCards(serverCards);
-                })
-                .catch(function(error) {
-                    console.log('Both config and API failed, using localStorage:', error);
-                    var localCards = {};
-                    try {
-                        localCards = JSON.parse(localStorage.getItem(STORE)) || {};
-                    } catch(e) {
-                        localCards = {};
-                    }
+        // Load artist data: API first, then localStorage, then config as fallback
+        fetch('/api/artist-cards.php')
+            .then(function(response) { return response.json(); })
+            .then(function(serverCards) {
+                localStorage.setItem(STORE, JSON.stringify(serverCards));
+                renderArtistCards(serverCards);
+            })
+            .catch(function(error) {
+                console.log('API failed, trying localStorage:', error);
+                var localCards = {};
+                try {
+                    localCards = JSON.parse(localStorage.getItem(STORE)) || {};
+                } catch(e) {
+                    localCards = {};
+                }
+                if (Object.keys(localCards).length > 0) {
                     renderArtistCards(localCards);
-                });
-        }
+                } else {
+                    // Fallback to config file
+                    console.log('localStorage empty, using config file');
+                    if (typeof ARTIST_CONFIG !== 'undefined' && ARTIST_CONFIG.artistsPage) {
+                        var cards = {};
+                        ARTIST_CONFIG.artistsPage.forEach(function(artist) {
+                            cards[artist.id] = {
+                                name: artist.name,
+                                roleTitle: artist.roleTitle,
+                                discordTag: artist.discordTag,
+                                bio: artist.bio,
+                                avatarUrl: artist.avatarUrl,
+                                socials: artist.socials
+                            };
+                        });
+                        localStorage.setItem(STORE, JSON.stringify(cards));
+                        renderArtistCards(cards);
+                    } else {
+                        console.log('No data available');
+                    }
+                }
+            });
 
         function renderArtistCards(cards) {
             var user = getUser();
