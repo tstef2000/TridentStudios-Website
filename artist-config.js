@@ -52,14 +52,14 @@ const ARTIST_CONFIG = {
         },
         {
             id: "4",
-            name: "This could be you",
-            roleTitle: "Future Artist?",
-            discordTag: "@discordusername",
-            bio: "Your specialties go here!",
-            avatarUrl: "",
+            name: "Washed",
+            roleTitle: "Senior Artist",
+            discordTag: "@1gh4",
+            bio: "Specializes in creating 3D Designs and stunning stickers",
+            avatarUrl: "https://drive.google.com/uc?export=download&id=17TPgKZr14bpP13fRI_x_FM-sOTCAxNhJ",
             socials: {
                 discord: "https://discord.gg/dPj6S5Vc2A",
-                youtube: "#"
+                youtube: "https://www.youtube.com/@Washedrust"
             }
         }
     ],
