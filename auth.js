@@ -137,7 +137,7 @@ class AuthManager {
         if (idx !== -1) this.users[idx] = user;
         this.saveUsers();
         this.currentUser = user;
-        // this.saveCurrentUser(); // Disable persistence to prevent auto-login
+        this.saveCurrentUser(); // Re-enable persistence for proper login functionality
         this.showNotification('Welcome back, ' + (user.username || user.email) + '!', 'success');
 
         // Role-based routing

@@ -5,9 +5,8 @@
 
 (function initNavAuth() {
     function getUser() {
-        // Clear any stored user to prevent auto-login
-        localStorage.removeItem('trident_currentUser');
-        return null;
+        try { return JSON.parse(localStorage.getItem('trident_currentUser')); }
+        catch (e) { return null; }
     }
 
     function getUserRoles(user) {
