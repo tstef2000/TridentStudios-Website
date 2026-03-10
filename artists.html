@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Artists - Trident Studios</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="images/trident-logo.png" alt="Trident Studios" class="logo-img">
+                <span>TRIDENT STUDIOS</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html#home" class="nav-link">Home</a></li>
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li><a href="artists.html" class="nav-link">Artists</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="socials.html" class="nav-link">Socials</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="login-btn" id="loginBtn" title="Login">
+                <i class="fas fa-user"></i>
+            </button>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Artists Section -->
+    <section class="artists-hero">
+        <h1 class="artists-title">OUR ARTISTS</h1>
+        <p class="artists-subtitle">Meet the talented creators behind Trident Studios</p>
+    </section>
+
+    <section class="artists-container">
+        <div class="container">
+            <div class="artists-grid">
+                <!-- Artist 1 -->
+                <div class="artist-card" data-card-id="1">
+                    <div class="artist-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="artist-info">
+                        <h2 class="artist-name">Rose</h2>
+                        <p class="artist-role">Senior Artist</p>
+                        <p class="artist-discord">@boringrose</p>
+                        <p class="artist-bio">Specializing in custom graphics, videos, and trailers.</p>
+                        <div class="artist-links">
+                            <a href="https://discord.gg/dPj6S5Vc2A" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
+                            <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artist 2 -->
+                <div class="artist-card" data-card-id="2">
+                    <div class="artist-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="artist-info">
+                        <h2 class="artist-name">Moonkie</h2>
+                        <p class="artist-role">Founder, Artist & Editor</p>
+                        <p class="artist-discord">@moonkiegfx</p>
+                        <p class="artist-bio">Creates stunning video trailers and cinematic gameplay highlights.</p>
+                        <div class="artist-links">
+                            <a href="https://discord.gg/dPj6S5Vc2A" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
+                            <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artist 3 -->
+                <div class="artist-card" data-card-id="3">
+                    <div class="artist-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="artist-info">
+                        <h2 class="artist-name">Krynn</h2>
+                        <p class="artist-role">Founder & Artist</p>
+                        <p class="artist-discord">@itzkrynn</p>
+                        <p class="artist-bio">Specializes in creating quality graphics and visuals</p>
+                        <div class="artist-links">
+                            <a href="https://discord.gg/dPj6S5Vc2A" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
+                            <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artist 4 -->
+                <div class="artist-card" data-card-id="4">
+                    <div class="artist-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="artist-info">
+                        <h2 class="artist-name">Artist Four</h2>
+                        <p class="artist-role">UI/UX Designer</p>
+                        <p class="artist-discord">@UIDesigner#0004</p>
+                        <p class="artist-bio">Designs beautiful Discord servers and in-game UI elements.</p>
+                        <div class="artist-links">
+                            <a href="https://discord.gg/dPj6S5Vc2A" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
+                            <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Artist Portfolio Details -->
+    <section id="artist1-portfolio" class="artist-portfolio-section hidden">
+        <div class="container">
+            <button class="close-portfolio-btn" onclick="closePortfolio()">&times;</button>
+            <h2>Artist Portfolio</h2>
+            <div class="portfolio-gallery">
+                <div class="portfolio-item">
+                    <div class="portfolio-image"><i class="fas fa-image"></i></div>
+                    <h3>Project 1</h3>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image"><i class="fas fa-image"></i></div>
+                    <h3>Project 2</h3>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image"><i class="fas fa-image"></i></div>
+                    <h3>Project 3</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Back to Top Button -->
+    <a href="artists.html" class="back-to-artists" style="display: none;" onclick="this.style.display='none'">Back to Artists</a>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>TRIDENT STUDIOS</h4>
+                    <p>Premium Rust content creation and graphic design</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html#home">Home</a></li>
+                        <li><a href="index.html#services">Services</a></li>
+                        <li><a href="artists.html">Artists</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="terms-of-service.html">Terms & Conditions</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#" title="Discord"><i class="fab fa-discord"></i></a>
+                        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Trident Studios. All rights reserved. | Rust is a trademark of Facepunch Studios.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="nav-auth.js"></script>
+    <script src="artist-config.js"></script>
+    <script>
+    // Load artist card data from the artist-config.js file
+    // This config file takes priority over backend API for easier management
+    (function() {
+        var STORE = 'trident_artist_cards';
+        var STORE_USER = 'trident_currentUser';
+        
+        function getUser() { 
+            try { 
+                return JSON.parse(localStorage.getItem(STORE_USER)); 
+            } catch(e) { 
+                return null; 
+            } 
+        }
+        
+        function getUserRoles(u) {
+            if (!u) return ['viewer'];
+            if (Array.isArray(u.roles) && u.roles.length) return u.roles;
+            if (typeof u.role === 'string' && u.role.trim()) return [u.role];
+            return ['viewer'];
+        }
+
+        // Load artist data from config file
+        if (typeof ARTIST_CONFIG !== 'undefined' && ARTIST_CONFIG.artistsPage) {
+            // Convert config format to card format and render
+            var cards = {};
+            ARTIST_CONFIG.artistsPage.forEach(function(artist) {
+                cards[artist.id] = {
+                    name: artist.name,
+                    roleTitle: artist.roleTitle,
+                    discordTag: artist.discordTag,
+                    bio: artist.bio,
+                    avatarUrl: artist.avatarUrl,
+                    socials: artist.socials
+                };
+            });
+            
+            // Sync to localStorage for compatibility
+            localStorage.setItem(STORE, JSON.stringify(cards));
+            
+            renderArtistCards(cards);
+        } else {
+            // Fallback: Try to fetch from backend API if config not available
+            console.log('Config file not loaded, attempting API fallback...');
+            fetch('/api/artist-cards.php')
+                .then(function(response) { return response.json(); })
+                .then(function(serverCards) {
+                    localStorage.setItem(STORE, JSON.stringify(serverCards));
+                    renderArtistCards(serverCards);
+                })
+                .catch(function(error) {
+                    console.log('Both config and API failed, using localStorage:', error);
+                    var localCards = {};
+                    try {
+                        localCards = JSON.parse(localStorage.getItem(STORE)) || {};
+                    } catch(e) {
+                        localCards = {};
+                    }
+                    renderArtistCards(localCards);
+                });
+        }
+
+        function renderArtistCards(cards) {
+            var user = getUser();
+            
+            // Render each artist card
+            document.querySelectorAll('.artist-card[data-card-id]').forEach(function(card) {
+                var id = card.getAttribute('data-card-id');
+                var data = cards[id];
+                if (!data) return;
+
+                if (data.name) card.querySelector('.artist-name').textContent = data.name;
+                if (data.roleTitle) card.querySelector('.artist-role').textContent = data.roleTitle;
+                if (data.discordTag) card.querySelector('.artist-discord').textContent = data.discordTag;
+                if (data.bio) card.querySelector('.artist-bio').textContent = data.bio;
+
+                if (data.avatarUrl) {
+                    var imgEl = card.querySelector('.artist-image');
+                    var imgHTML = '<img src="' + data.avatarUrl + '" alt="' + (data.name || 'Artist') + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentNode.innerHTML=&quot;&lt;i class=&#39;fas fa-user-circle&#39;&gt;&lt;/i&gt;&quot;">';
+                    imgEl.innerHTML = imgHTML;
+                }
+
+                // Social links
+                if (data.socials) {
+                    var links = card.querySelector('.artist-links');
+                    var html = '';
+                    if (data.socials.discord && data.socials.discord !== '#') html += '<a href="' + data.socials.discord + '" title="Discord" class="artist-link" target="_blank"><i class="fab fa-discord"></i></a>';
+                    if (data.socials.youtube && data.socials.youtube !== '#') html += '<a href="' + data.socials.youtube + '" title="YouTube" class="artist-link" target="_blank"><i class="fab fa-youtube"></i></a>';
+                    if (html) links.innerHTML = html;
+                }
+            });
+
+            // Show "Edit" button for artist users on their assigned card, or for admins on all cards
+            var userRoles = getUserRoles(user);
+            var isAdmin = user && userRoles.includes('admin');
+            var isArtist = user && userRoles.includes('artist');
+            
+            if (isAdmin) {
+                // Admins can edit any card - add visual indicator
+                document.querySelectorAll('.artist-card[data-card-id]').forEach(function(card) {
+                    // Add subtle admin indicator to card
+                    card.style.borderColor = 'rgba(43, 179, 255, 0.3)';
+                    
+                    if (!card.querySelector('.artist-card-edit-btn')) {
+                        var cardId = card.getAttribute('data-card-id');
+                        var editBtn = document.createElement('a');
+                        editBtn.href = 'artist-editor.html?card=' + cardId;
+                        editBtn.className = 'artist-card-edit-btn';
+                        editBtn.title = 'Edit Card (Admin Access)';
+                        editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i>';
+                        card.appendChild(editBtn);
+                    }
+                });
+            } else if (isArtist && user.artistCardId) {
+                // Artists can edit only their assigned card
+                var myCard = document.querySelector('.artist-card[data-card-id="' + user.artistCardId + '"]');
+                if (myCard && !myCard.querySelector('.artist-card-edit-btn')) {
+                    var editBtn = document.createElement('a');
+                    editBtn.href = 'artist-editor.html?card=' + user.artistCardId;
+                    editBtn.className = 'artist-card-edit-btn';
+                    editBtn.title = 'Edit My Card';
+                    editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i>';
+                    myCard.appendChild(editBtn);
+                }
+            }
+        }
+    })();
+    </script>
+</body>
+</html>
