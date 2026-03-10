@@ -332,6 +332,10 @@
         // =====================================================
         // PORTFOLIO CONFIGURATION
         // Customize your portfolio items below
+        // Supported media types:
+        // - image: "icon" (uses FontAwesome), or image URL
+        // - video: YouTube/Vimeo URL, or direct video file URL
+        // - link: Optional external link for the item
         // =====================================================
 
         const portfolioItems = [
@@ -340,6 +344,7 @@
                 description: "Complete visual identity for a 200+ member Rust clan",
                 image: "icon", // Use "icon" for FontAwesome icon, or provide image URL
                 icon: "fas fa-image", // FontAwesome icon class (only used if image is "icon")
+                video: null, // Optional: Direct video URL or embed code
                 link: null // Optional: URL to link to (e.g., "https://example.com")
             },
             {
@@ -347,6 +352,7 @@
                 description: "4K cinematic trailer for hardcore RP server launch",
                 image: "icon",
                 icon: "fas fa-video",
+                video: null,
                 link: null
             },
             {
@@ -354,6 +360,7 @@
                 description: "Professional branding for Rust esports tournament",
                 image: "icon",
                 icon: "fas fa-trophy",
+                video: null,
                 link: null
             },
             {
@@ -361,6 +368,7 @@
                 description: "Custom Discord server with 50+ custom emojis",
                 image: "icon",
                 icon: "fab fa-discord",
+                video: null,
                 link: null
             },
             {
@@ -368,6 +376,7 @@
                 description: "Channel art, thumbnails, and intros for content creators",
                 image: "icon",
                 icon: "fab fa-youtube",
+                video: null,
                 link: null
             }
             // Add more items here following the same format
@@ -387,11 +396,38 @@
                 itemDiv.style.opacity = '0';
                 itemDiv.style.animation = `0.8s ease ${index * 0.1}s 1 normal forwards running cardSlideIn`;
 
-                let imageHtml = '';
-                if (item.image === 'icon') {
-                    imageHtml = `<i class="${item.icon}"></i>`;
+                let mediaHtml = '';
+
+                // Handle video embeds
+                if (item.video) {
+                    if (item.video.includes('youtube.com') || item.video.includes('youtu.be')) {
+                        // YouTube embed
+                        const videoId = item.video.includes('youtu.be') 
+                            ? item.video.split('/').pop().split('?')[0]
+                            : new URL(item.video).searchParams.get('v');
+                        mediaHtml = `<iframe src="https://www.youtube.com/embed/${videoId}" 
+                            frameborder="0" allowfullscreen 
+                            style="width: 100%; height: 200px; border-radius: 8px;"></iframe>`;
+                    } else if (item.video.includes('vimeo.com')) {
+                        // Vimeo embed
+                        const videoId = item.video.split('/').pop();
+                        mediaHtml = `<iframe src="https://player.vimeo.com/video/${videoId}" 
+                            frameborder="0" allowfullscreen 
+                            style="width: 100%; height: 200px; border-radius: 8px;"></iframe>`;
+                    } else {
+                        // Direct video file
+                        mediaHtml = `<video controls style="width: 100%; height: 200px; border-radius: 8px;">
+                            <source src="${item.video}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>`;
+                    }
                 } else {
-                    imageHtml = `<img src="${item.image}" alt="${item.title}" onerror="this.style.display='none'">`;
+                    // Handle images or icons
+                    if (item.image === 'icon') {
+                        mediaHtml = `<i class="${item.icon}"></i>`;
+                    } else {
+                        mediaHtml = `<img src="${item.image}" alt="${item.title}" onerror="this.style.display='none'">`;
+                    }
                 }
 
                 const linkStart = item.link ? `<a href="${item.link}" target="_blank" rel="noopener noreferrer">` : '';
@@ -400,7 +436,7 @@
                 itemDiv.innerHTML = `
                     ${linkStart}
                     <div class="portfolio-image">
-                        ${imageHtml}
+                        ${mediaHtml}
                     </div>
                     <h3 class="">${item.title}</h3>
                     <p class="">${item.description}</p>
