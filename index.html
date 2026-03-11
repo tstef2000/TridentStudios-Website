@@ -23,35 +23,9 @@
                 <li><a href="socials.html" class="nav-link">Socials</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
-            <div class="nav-user-pill" role="button" aria-label="User menu">
-            <div class="nav-user-avatar nav-user-avatar-initial">
-                T
-            </div>
-            <div class="nav-user-meta">
-                <span class="nav-user-name">Trystan</span>
-                <span class="nav-user-role">Admin</span>
-            </div>
-            <i class="fas fa-chevron-down nav-user-caret"></i>
-
-            <div class="nav-user-dropdown" role="menu">
-                <div class="nav-dd-header">
-                    <div class="nav-dd-avatar nav-dd-avatar-initial">
-                        T
-                    </div>
-                    <div>
-                        <strong>Trystan</strong>
-                        <p class="">stefanowicz.trystan@gmail.com</p>
-                    </div>
-                </div>
-                <div class="nav-dd-divider"></div>
-                <a href="profile.html" class="nav-dd-item"><i class="fas fa-user-cog"></i> My Profile</a>
-                <a href="dashboard.html" class="nav-dd-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                <div class="nav-dd-divider"></div>
-                <a href="#" class="nav-dd-item nav-dd-logout" id="navLogoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Sign Out
-                </a>
-            </div>
-        </div>
+            <button class="login-btn" id="loginBtn" title="Login">
+                <i class="fas fa-user"></i>
+            </button>
             <div class="hamburger">
                 <span></span>
                 <span></span>
@@ -165,7 +139,7 @@
     <section id="portfolio" class="portfolio">
         <div class="container">
             <h2 class="section-title">Portfolio Showcase</h2>
-            <div class="portfolio-grid">
+            <div class="portfolio-grid" id="portfolioGrid">
                 <div class="portfolio-item" style="opacity: 0; animation: 0.8s ease 0s 1 normal forwards running cardSlideIn;">
                     <div class="portfolio-image">
                         <i class="fas fa-image"></i>

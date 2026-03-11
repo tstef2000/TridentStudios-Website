@@ -44,9 +44,123 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize all systems
     setupNavigation();
-    setupScrollAnimations();
     setupFormSubmission();
+
+    // Portfolio renders first so reveal observers can include loaded items.
+    loadPortfolioShowcase().finally(() => {
+        setupScrollAnimations();
+    });
 });
+
+async function loadPortfolioShowcase() {
+    const grid = document.getElementById('portfolioGrid');
+    if (!grid) return;
+
+    try {
+        let response = await fetch('/api/portfolio.php?ts=' + Date.now(), { cache: 'no-store' });
+        if (!response.ok) {
+            response = await fetch('data/portfolio-showcase.json?ts=' + Date.now(), { cache: 'no-store' });
+        }
+        if (!response.ok) return;
+
+        const payload = await response.json();
+        const items = Array.isArray(payload.items) ? payload.items : [];
+        if (!items.length) return;
+
+        grid.innerHTML = '';
+        items.forEach((item) => {
+            const card = document.createElement('div');
+            card.className = 'portfolio-item';
+
+            const mediaWrap = document.createElement('div');
+            mediaWrap.className = 'portfolio-image';
+
+            if ((item.mediaType || '').toLowerCase() === 'video' && item.mediaUrl) {
+                const video = document.createElement('video');
+                video.className = 'portfolio-media portfolio-media-video';
+                video.setAttribute('preload', 'auto');
+                video.setAttribute('playsinline', '');
+                video.setAttribute('muted', '');
+                video.setAttribute('loop', '');
+                video.setAttribute('autoplay', '');
+                video.setAttribute('disablepictureinpicture', '');
+                video.setAttribute('disableremoteplayback', '');
+                video.setAttribute('controlslist', 'nofullscreen nodownload noremoteplayback');
+                video.defaultMuted = true;
+                video.muted = true;
+                video.volume = 0;
+                video.removeAttribute('poster');
+                video.addEventListener('volumechange', () => {
+                    if (!video.muted || video.volume !== 0) {
+                        video.muted = true;
+                        video.volume = 0;
+                    }
+                });
+                const source = document.createElement('source');
+                source.src = item.mediaUrl;
+                source.type = item.mimeType || 'video/mp4';
+                video.appendChild(source);
+                video.dataset.loaded = 'true';
+                mediaWrap.appendChild(video);
+            } else if ((item.mediaType || '').toLowerCase() === 'link' && item.mediaUrl) {
+                const link = document.createElement('a');
+                link.className = 'portfolio-media-link';
+                link.href = item.mediaUrl;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.innerHTML = '<i class="fas fa-up-right-from-square"></i><span>Open Project Link</span>';
+                mediaWrap.appendChild(link);
+            } else if (item.mediaUrl) {
+                const img = document.createElement('img');
+                img.className = 'portfolio-media';
+                img.src = item.mediaUrl;
+                img.alt = item.alt || item.title || 'Portfolio preview';
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                mediaWrap.appendChild(img);
+            } else {
+                mediaWrap.innerHTML = '<i class="fas fa-image"></i>';
+            }
+
+            const title = document.createElement('h3');
+            title.textContent = item.title || 'Portfolio Item';
+            const description = document.createElement('p');
+            description.textContent = item.description || '';
+
+            card.appendChild(mediaWrap);
+            card.appendChild(title);
+            card.appendChild(description);
+            grid.appendChild(card);
+        });
+
+        optimizePortfolioVideos(grid);
+    } catch (error) {
+        console.warn('Failed to load portfolio showcase config:', error);
+    }
+}
+
+function optimizePortfolioVideos(container) {
+    const videos = container.querySelectorAll('video.portfolio-media-video');
+    if (!videos.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            const video = entry.target;
+            if (!entry.isIntersecting) {
+                if (!video.paused) video.pause();
+                return;
+            }
+
+            video.currentTime = 0;
+            video.play().catch(() => {});
+        });
+    }, {
+        rootMargin: '200px 0px 200px 0px',
+        threshold: 0.2
+    });
+
+    videos.forEach((video) => observer.observe(video));
+}
 
 // ========================================
 // Navigation
@@ -116,22 +230,22 @@ function setupNavigation() {
 
 function setupScrollAnimations() {
     const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px'
     };
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.style.animation = 'cardSlideIn 0.8s ease forwards';
+                entry.target.classList.add('is-revealed');
                 observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
 
     // Observe all animated elements
-    document.querySelectorAll('.service-card, .portfolio-item, .artist-card, .artist-social-card, .studio-social-link, .about-content, .official-server-card').forEach(el => {
-        el.style.opacity = '0';
+    document.querySelectorAll('.service-card, .portfolio-item, .artist-card, .artist-social-card, .studio-social-link, .about-content, .official-server-card, .contact-method').forEach(el => {
+        el.classList.add('reveal-on-scroll');
         observer.observe(el);
     });
 

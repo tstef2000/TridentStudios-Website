@@ -11,6 +11,8 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
+require_once __DIR__ . '/db.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -109,6 +111,19 @@ if (file_put_contents($filepath, $html_content) === false) {
 $log_entry = date('Y-m-d H:i:s') . " - User: $user_email - Published: $filename\n";
 $log_file = $BASE_DIR . '/logs/publish.log';
 @file_put_contents($log_file, $log_entry, FILE_APPEND);
+
+$pdo = trident_get_db();
+if ($pdo) {
+    try {
+        $stmt = $pdo->prepare('INSERT INTO publish_logs (user_email, filename) VALUES (:user_email, :filename)');
+        $stmt->execute([
+            ':user_email' => $user_email,
+            ':filename' => $filename,
+        ]);
+    } catch (Throwable $e) {
+        error_log('Failed to write publish log to DB: ' . $e->getMessage());
+    }
+}
 
 // ── Clean Old Backups (keep last 10) ──────────────────────
 $backups = glob($BACKUP_DIR . '/*_' . $filename);

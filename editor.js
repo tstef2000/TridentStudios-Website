@@ -16,9 +16,26 @@ class WebsiteEditor {
         this.canvas         = document.getElementById('canvasContent'); // compat shim
         this.selectedEl     = null;
         this.pendingChanges = {};
+        this.supportedPages = [
+            'index.html',
+            'artists.html',
+            'socials.html',
+            'profile.html',
+            'dashboard.html',
+            'admin-panel.html',
+            'artist-editor.html',
+            'login.html',
+            'privacy-policy.html',
+            'terms-of-service.html'
+        ];
+        this.currentPage = localStorage.getItem('trident_editor_current_page') || 'index.html';
+        if (!this.supportedPages.includes(this.currentPage)) this.currentPage = 'index.html';
 
         this.initEditorControls();
         this.iframe.addEventListener('load', () => this.initIframeEditing());
+        this.loadPage(this.currentPage);
+        this.loadPortfolioData();
+        this.updateDbStatusBadge();
         this.logAction('Opened editor', 'Website editor session started');
     }
 
@@ -103,7 +120,6 @@ class WebsiteEditor {
     updatePropertiesPanel(el) {
         const panel = document.getElementById('propertiesPanel');
         const tag   = el.tagName.toLowerCase();
-
         panel.innerHTML = `
             <div class="property-item">
                 <label>Selected element</label>
@@ -123,8 +139,14 @@ class WebsiteEditor {
             </div>
             ${tag === 'a' ? `
             <div class="property-item" style="margin-top:12px;">
+                <label>Link Text</label>
+                <input type="text" id="elTextInput"
+                    style="width:100%;padding:8px;background:rgba(3,23,35,0.85);color:#e6f6ff;
+                    border:1px solid rgba(43,179,255,0.3);border-radius:6px;font-size:13px;">
+            </div>
+            <div class="property-item" style="margin-top:12px;">
                 <label>Link URL</label>
-                <input type="text" id="elHrefInput" value="${el.getAttribute('href') || ''}"
+                <input type="text" id="elHrefInput"
                     placeholder="https://..."
                     style="width:100%;padding:8px;background:rgba(3,23,35,0.85);color:#e6f6ff;
                     border:1px solid rgba(43,179,255,0.3);border-radius:6px;font-size:13px;">
@@ -140,8 +162,19 @@ class WebsiteEditor {
 
         const hrefInput = document.getElementById('elHrefInput');
         if (hrefInput) {
+            hrefInput.value = el.getAttribute('href') || '';
             hrefInput.addEventListener('input', e => {
                 el.href = e.target.value;
+                el.dataset.tsChanged = 'true';
+                this.savePendingChanges();
+            });
+        }
+
+        const textInput = document.getElementById('elTextInput');
+        if (textInput) {
+            textInput.value = el.textContent;
+            textInput.addEventListener('input', e => {
+                el.textContent = e.target.value;
                 el.dataset.tsChanged = 'true';
                 this.savePendingChanges();
             });
@@ -152,6 +185,8 @@ class WebsiteEditor {
     initEditorControls() {
         document.getElementById('previewBtn').addEventListener('click', () => {
             document.getElementById('previewModal').style.display = 'flex';
+            const previewFrame = document.getElementById('previewModalFrame');
+            if (previewFrame) previewFrame.src = this.currentPage;
             this.logAction('Previewed website', 'Full preview opened');
         });
 
@@ -160,6 +195,14 @@ class WebsiteEditor {
         });
 
         document.getElementById('publishBtn').addEventListener('click', () => this.publish());
+
+        const pageSelector = document.getElementById('pageSelector');
+        if (pageSelector) {
+            pageSelector.value = this.currentPage;
+            pageSelector.addEventListener('change', (e) => {
+                this.loadPage(e.target.value);
+            });
+        }
 
         document.getElementById('desktopBtn').addEventListener('click', () => {
             this.iframe.classList.remove('mobile-view');
@@ -191,6 +234,106 @@ class WebsiteEditor {
         document.querySelectorAll('.element-item').forEach(item => {
             item.addEventListener('click', () => this.injectElement(item.dataset.type));
         });
+
+        const loadPortfolioBtn = document.getElementById('loadPortfolioBtn');
+        if (loadPortfolioBtn) {
+            loadPortfolioBtn.addEventListener('click', () => this.loadPortfolioData());
+        }
+
+        const savePortfolioBtn = document.getElementById('savePortfolioBtn');
+        if (savePortfolioBtn) {
+            savePortfolioBtn.addEventListener('click', () => this.savePortfolioData());
+        }
+    }
+
+    async loadPortfolioData() {
+        const input = document.getElementById('portfolioJsonInput');
+        if (!input) return;
+
+        try {
+            const res = await fetch('/api/portfolio.php', { cache: 'no-store' });
+            if (!res.ok) throw new Error('Failed to fetch portfolio');
+            const data = await res.json();
+            input.value = JSON.stringify(data, null, 2);
+        } catch (e) {
+            this.showNotification('Failed to load portfolio data', 'error');
+        }
+    }
+
+    async savePortfolioData() {
+        const input = document.getElementById('portfolioJsonInput');
+        if (!input) return;
+
+        let payload;
+        try {
+            payload = JSON.parse(input.value || '{"items":[]}');
+        } catch (e) {
+            this.showNotification('Portfolio JSON is invalid', 'error');
+            return;
+        }
+
+        if (!Array.isArray(payload.items)) {
+            this.showNotification('Portfolio JSON must include an items array', 'error');
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/portfolio.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await res.json();
+            if (!result.success) {
+                this.showNotification(result.error || 'Failed to save portfolio data', 'error');
+                return;
+            }
+
+            this.showNotification('Portfolio saved to ' + (result.storage || 'storage'), 'success');
+            this.logAction('Saved portfolio', 'Portfolio manager save');
+            if (this.currentPage === 'index.html') {
+                this.iframe.src = this.currentPage;
+            }
+        } catch (e) {
+            this.showNotification('Failed to save portfolio data', 'error');
+        }
+    }
+
+    async updateDbStatusBadge() {
+        const badge = document.getElementById('dbStatusBadge');
+        if (!badge) return;
+
+        try {
+            const res = await fetch('/api/db-status.php', { cache: 'no-store' });
+            const data = await res.json();
+            if (data.dbConnected) {
+                badge.textContent = 'DB: Connected';
+                badge.style.borderColor = 'rgba(76, 175, 80, 0.45)';
+                badge.style.color = '#9de4a6';
+            } else {
+                badge.textContent = 'DB: File Fallback';
+                badge.style.borderColor = 'rgba(255, 193, 7, 0.45)';
+                badge.style.color = '#ffd873';
+            }
+        } catch (e) {
+            badge.textContent = 'DB: Status Unknown';
+            badge.style.borderColor = 'rgba(193, 67, 79, 0.45)';
+            badge.style.color = '#ff9fa8';
+        }
+    }
+
+    loadPage(page) {
+        if (!this.supportedPages.includes(page)) return;
+        this.currentPage = page;
+        localStorage.setItem('trident_editor_current_page', page);
+        this.iframe.src = page;
+
+        const pageLabel = document.getElementById('currentPageLabel');
+        if (pageLabel) {
+            pageLabel.innerHTML = `<i class="fas fa-globe" style="color: var(--primary-color);"></i> ${page}`;
+        }
+
+        this.showNotification('Switched editor to ' + page, 'info');
     }
 
     // ── Inject a new element into the live iframe ──────────────────────────
@@ -285,8 +428,8 @@ class WebsiteEditor {
         // Get clean HTML
         const htmlContent = '<!DOCTYPE html>\n' + docClone.documentElement.outerHTML;
 
-        // Determine filename (currently editing index.html)
-        const filename = 'index.html'; // TODO: Make this dynamic based on what page is being edited
+        // Publish the page currently selected in the editor.
+        const filename = this.currentPage;
 
         this.showNotification('Publishing changes...', 'info');
 

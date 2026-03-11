@@ -70,30 +70,35 @@
         const loginBtn = document.getElementById('loginBtn');
         if (!loginBtn) return;
 
-        if (user) {
-            const pill = buildPill(user);
-
-            // Toggle dropdown
-            pill.addEventListener('click', (e) => {
-                if (e.target.closest('#navLogoutBtn')) {
-                    e.preventDefault();
-                    localStorage.removeItem('trident_currentUser');
-                    window.location.href = 'index.html';
-                    return;
-                }
-                // Don't close when clicking a link
-                if (e.target.closest('a:not(#navLogoutBtn)')) return;
-                pill.classList.toggle('open');
+        if (!user) {
+            loginBtn.addEventListener('click', () => {
+                window.location.href = 'login.html';
             });
-
-            // Close on outside click
-            document.addEventListener('click', (e) => {
-                if (!pill.contains(e.target)) pill.classList.remove('open');
-            });
-
-            // Swap out login button
-            loginBtn.parentNode.replaceChild(pill, loginBtn);
+            return;
         }
+
+        const pill = buildPill(user);
+
+        // Toggle dropdown
+        pill.addEventListener('click', (e) => {
+            if (e.target.closest('#navLogoutBtn')) {
+                e.preventDefault();
+                localStorage.removeItem('trident_currentUser');
+                window.location.href = 'index.html';
+                return;
+            }
+            // Don't close when clicking a link
+            if (e.target.closest('a:not(#navLogoutBtn)')) return;
+            pill.classList.toggle('open');
+        });
+
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!pill.contains(e.target)) pill.classList.remove('open');
+        });
+
+        // Swap out login button
+        loginBtn.parentNode.replaceChild(pill, loginBtn);
     }
 
     if (document.readyState === 'loading') {

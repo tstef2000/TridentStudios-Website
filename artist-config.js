@@ -52,14 +52,14 @@ const ARTIST_CONFIG = {
         },
         {
             id: "4",
-            name: "This could be you",
-            roleTitle: "Future Artist?",
-            discordTag: "@discordusername",
-            bio: "Your specialties go here!",
-            avatarUrl: "",
+            name: "Washed",
+            roleTitle: "Senior Artist",
+            discordTag: "@1gh4",
+            bio: "Specializing in 3D Design, stunning stickers & cinematics",
+            avatarUrl: "https://i.postimg.cc/HWwwPLgr/885e960afd3dba4409a41b994a71fab7.png",
             socials: {
                 discord: "https://discord.gg/dPj6S5Vc2A",
-                youtube: "#"
+                youtube: "https://www.youtube.com/@Washedrust"
             }
         }
     ],
@@ -97,11 +97,11 @@ const ARTIST_CONFIG = {
             }
         },
         {
-            name: "This could be you",
-            roleTitle: "Future Artist?",
+            name: "Washed",
+            roleTitle: "Senior Artist",
             socials: {
                 discord: "https://discord.gg/dPj6S5Vc2A",
-                youtube: "#"
+                youtube: "https://www.youtube.com/@Washedrust"
             }
         }
     ],

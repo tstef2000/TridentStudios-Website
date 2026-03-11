@@ -1,0 +1,52 @@
+{
+  "items": [
+    {
+      "id": "1",
+      "title": "Clan Branding Package",
+      "description": "Complete visual identity for a 200+ member Rust clan.",
+      "mediaType": "image",
+      "mediaUrl": "images/trident-logo.png",
+      "alt": "Clan branding preview"
+    },
+    {
+      "id": "2",
+      "title": "Server Launch Trailer",
+      "description": "4K cinematic trailer for hardcore RP server launch.",
+      "mediaType": "video",
+      "mediaUrl": "videos/hero-bg.mp4",
+      "mimeType": "video/mp4"
+    },
+    {
+      "id": "3",
+      "title": "Tournament Graphics",
+      "description": "Professional branding for Rust esports tournament.",
+      "mediaType": "image",
+      "mediaUrl": "images/trident-logo.png",
+      "alt": "Tournament graphics preview"
+    },
+    {
+      "id": "4",
+      "title": "Discord Community Design",
+      "description": "Custom Discord server branding and media kits.",
+      "mediaType": "image",
+      "mediaUrl": "images/trident-logo.png",
+      "alt": "Discord community design preview"
+    },
+    {
+      "id": "5",
+      "title": "YouTube Channel Branding",
+      "description": "Channel art, thumbnails, and intros for content creators.",
+      "mediaType": "image",
+      "mediaUrl": "images/trident-logo.png",
+      "alt": "YouTube channel branding preview"
+    },
+    {
+      "id": "6",
+      "title": "Event Promotional Campaign",
+      "description": "Multi-platform graphics for seasonal server events.",
+      "mediaType": "image",
+      "mediaUrl": "images/trident-logo.png",
+      "alt": "Event campaign preview"
+    }
+  ]
+}

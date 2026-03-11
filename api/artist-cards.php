@@ -11,6 +11,8 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
+require_once __DIR__ . '/db.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -34,6 +36,18 @@ if (!is_dir($BACKUP_DIR)) {
 
 // ── GET: Retrieve all artist cards ────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $pdo = trident_get_db();
+    if ($pdo) {
+        $stmt = $pdo->query('SELECT card_id, payload FROM artist_cards ORDER BY CAST(card_id AS UNSIGNED), card_id');
+        $rows = $stmt->fetchAll();
+        $cards = [];
+        foreach ($rows as $row) {
+            $cards[$row['card_id']] = json_decode($row['payload'], true) ?: [];
+        }
+        echo json_encode($cards, JSON_UNESCAPED_SLASHES);
+        exit();
+    }
+
     if (file_exists($DATA_FILE)) {
         $data = file_get_contents($DATA_FILE);
         echo $data;
@@ -79,6 +93,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
+    $pdo = trident_get_db();
+    if ($pdo) {
+        $cardData['lastUpdated'] = date('Y-m-d H:i:s');
+        $cardData['updatedBy'] = $userEmail;
+        $payload = json_encode($cardData, JSON_UNESCAPED_SLASHES);
+
+        $stmt = $pdo->prepare(
+            'INSERT INTO artist_cards (card_id, payload, updated_by)
+             VALUES (:card_id, :payload, :updated_by)
+             ON DUPLICATE KEY UPDATE
+                payload = VALUES(payload),
+                updated_by = VALUES(updated_by),
+                updated_at = CURRENT_TIMESTAMP'
+        );
+        $stmt->execute([
+            ':card_id' => (string)$cardId,
+            ':payload' => $payload,
+            ':updated_by' => $userEmail,
+        ]);
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Artist card saved successfully',
+            'cardId' => $cardId,
+            'storage' => 'database',
+            'timestamp' => date('c')
+        ]);
+        exit();
+    }
+
     // Create backup before modifying
     if (file_exists($DATA_FILE)) {
         $backupFilename = 'artist-cards_' . date('Y-m-d_His') . '.json';
@@ -129,6 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'success' => true,
             'message' => 'Artist card saved successfully',
             'cardId' => $cardId,
+            'storage' => 'file',
             'timestamp' => date('c')
         ]);
     } else {
