@@ -2,24 +2,24 @@
   "items": [
     {
       "id": "1",
-      "title": "Clan Branding Package",
-      "description": "Complete visual identity for a 200+ member Rust clan.",
+      "title": "Brand Design",
+      "description": "Complete visual identity for rust brands.",
       "mediaType": "image",
       "mediaUrl": "images/trident-logo.png",
       "alt": "Clan branding preview"
     },
     {
       "id": "2",
-      "title": "Server Launch Trailer",
-      "description": "4K cinematic trailer for a Rust server launch event.",
+      "title": "Raid Camera",
+      "description": "4K cinematic high energy, action packed video showcasing a raid in rust.",
       "mediaType": "video",
       "mediaUrl": "videos/hero-bg.mp4",
       "mimeType": "video/mp4"
     },
     {
       "id": "3",
-      "title": "Tournament Graphics",
-      "description": "Professional branding for Rust esports tournament.",
+      "title": "Server Trailer",
+      "description": "4K cinematic trailer for a Rust server launch event.",
       "mediaType": "image",
       "mediaUrl": "images/trident-logo.png",
       "alt": "Tournament graphics preview"
