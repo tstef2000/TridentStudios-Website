@@ -16,6 +16,8 @@ class WebsiteEditor {
         this.canvas         = document.getElementById('canvasContent'); // compat shim
         this.selectedEl     = null;
         this.pendingChanges = {};
+        this.undoStack = [];
+        this.redoStack = [];
         this.supportedPages = [
             'index.html',
             'artists.html',
@@ -24,12 +26,14 @@ class WebsiteEditor {
             'dashboard.html',
             'admin-panel.html',
             'artist-editor.html',
+            'artist-portfolio.html',
             'login.html',
             'privacy-policy.html',
             'terms-of-service.html'
         ];
         this.currentPage = localStorage.getItem('trident_editor_current_page') || 'index.html';
-        if (!this.supportedPages.includes(this.currentPage)) this.currentPage = 'index.html';
+        // Allow pages with querystrings (e.g. artist-portfolio.html?id=5)
+        if (!this.supportedPages.includes(this.currentPage.split('?')[0])) this.currentPage = 'index.html';
 
         this.initEditorControls();
         this.iframe.addEventListener('load', () => this.initIframeEditing());
@@ -79,17 +83,19 @@ class WebsiteEditor {
         `;
         doc.head.appendChild(style);
 
-        if (!doc.querySelector('.ts-edit-bar')) {
-            const bar = doc.createElement('div');
-            bar.className = 'ts-edit-bar';
-            bar.innerHTML = `
-                <span style="font-weight:600;">&#9998; Trident Studios Editor</span>
-                <span class="ts-edit-bar-badge">EDIT MODE</span>
-                <span style="opacity:0.5; font-size:12px;">— Click any text to select &amp; edit</span>
-            `;
-            doc.body.insertBefore(bar, doc.body.firstChild);
-            doc.body.style.paddingTop = '38px';
-        }
+        // Add a small in-iframe editor bar with Undo/Redo and badge
+        const existingBar = doc.getElementById('ts-edit-bar');
+        if (existingBar) existingBar.remove();
+        const editBar = doc.createElement('div');
+        editBar.className = 'ts-edit-bar';
+        editBar.innerHTML = `<div class="ts-edit-bar-badge">EDITOR</div><div style="flex:1"></div><div style="display:flex;gap:8px;"><button id="ts-undo-btn" style="pointer-events:auto;background:transparent;border:1px solid rgba(255,255,255,0.06);color:#dff6ff;padding:6px 10px;border-radius:6px;">Undo</button><button id="ts-redo-btn" style="pointer-events:auto;background:transparent;border:1px solid rgba(255,255,255,0.06);color:#dff6ff;padding:6px 10px;border-radius:6px;">Redo</button></div>`;
+        editBar.style.pointerEvents = 'auto';
+        doc.body.appendChild(editBar);
+        // wire undo/redo to parent editor instance
+        const undoBtn = doc.getElementById('ts-undo-btn');
+        const redoBtn = doc.getElementById('ts-redo-btn');
+        if (undoBtn) undoBtn.addEventListener('click', () => this.undo());
+        if (redoBtn) redoBtn.addEventListener('click', () => this.redo());
 
         const SELECTORS = 'h1, h2, h3, h4, h5, p, a, button, .hero-title, .hero-subtitle, .section-title, .service-card h3, .service-card p, .portfolio-item h3, .portfolio-item p';
         doc.querySelectorAll(SELECTORS).forEach(el => {
@@ -111,6 +117,8 @@ class WebsiteEditor {
                 a.addEventListener('click', e => e.preventDefault(), true);
             }
         });
+
+
 
         // Ensure videos play
         doc.querySelectorAll('video[autoplay]').forEach(v => v.play().catch(() => {}));
@@ -198,7 +206,31 @@ class WebsiteEditor {
 
         const pageSelector = document.getElementById('pageSelector');
         if (pageSelector) {
-            pageSelector.value = this.currentPage;
+            // Populate artist portfolio pages dynamically from config
+            try {
+                if (typeof ARTIST_CONFIG !== 'undefined' && Array.isArray(ARTIST_CONFIG.artistsPage)) {
+                    ARTIST_CONFIG.artistsPage.forEach(artist => {
+                        const opt = document.createElement('option');
+                        opt.value = `artist-portfolio.html?id=${artist.id}`;
+                        opt.textContent = `${artist.name} Portfolio`;
+                        pageSelector.appendChild(opt);
+                    });
+                }
+            } catch (e) {
+                // ignore if config not available
+            }
+
+            // Set selector to current page (may include querystring)
+            try {
+                pageSelector.value = this.currentPage;
+                if (pageSelector.value !== this.currentPage) {
+                    // No matching option; default to index
+                    pageSelector.value = 'index.html';
+                }
+            } catch (e) {
+                pageSelector.value = 'index.html';
+            }
+
             pageSelector.addEventListener('change', (e) => {
                 this.loadPage(e.target.value);
             });
@@ -233,6 +265,10 @@ class WebsiteEditor {
         // Sidebar elements — click to inject into iframe
         document.querySelectorAll('.element-item').forEach(item => {
             item.addEventListener('click', () => this.injectElement(item.dataset.type));
+            // Drag support: set transfer type
+            item.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', item.dataset.type || '');
+            });
         });
 
         const loadPortfolioBtn = document.getElementById('loadPortfolioBtn');
@@ -323,7 +359,9 @@ class WebsiteEditor {
     }
 
     loadPage(page) {
-        if (!this.supportedPages.includes(page)) return;
+        // Accept pages with optional querystring, e.g. artist-portfolio.html?id=5
+        const base = (page || '').split('?')[0];
+        if (!this.supportedPages.includes(base)) return;
         this.currentPage = page;
         localStorage.setItem('trident_editor_current_page', page);
         this.iframe.src = page;
@@ -354,15 +392,95 @@ class WebsiteEditor {
             form:      '<form><input type="text" placeholder="Your Name" style="display:block;width:100%;margin-bottom:10px;padding:12px 14px;background:rgba(3,23,35,0.85);color:#e6f6ff;border:1px solid rgba(43,179,255,0.25);border-radius:8px;font-size:14px;box-sizing:border-box;"><button type="submit" style="padding:12px 30px;background:linear-gradient(135deg,#2bb3ff,#00d1ff);color:#031723;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Submit</button></form>'
         };
 
-        wrapper.innerHTML = (templates[type] || `<p style="color:#e6f6ff;">New ${type}</p>`) +
-            `<button onclick="this.parentNode.remove()" style="position:absolute;top:6px;right:8px;background:rgba(193,67,79,0.85);color:#fff;border:none;border-radius:5px;padding:4px 9px;cursor:pointer;font-size:11px;font-weight:600;">&#10005; Remove</button>`;
-
-        const insertAfter = doc.querySelector('section') || doc.querySelector('nav') || doc.body;
-        if (insertAfter.after) {
-            insertAfter.after(wrapper);
+        // Support media presets when using the inject button (non-drag)
+        if (type.startsWith('media-')) {
+            const aspect = type.replace('media-', '');
+            wrapper.innerHTML = `<div class="editor-media media-${aspect}" style="width:320px;height:320px;">
+                <div class="media-inner" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(6,34,51,0.9);border:1px dashed rgba(43,179,255,0.12);">
+                    <button class="media-upload-btn" style="background:none;border:none;color:var(--primary-color);font-size:18px;cursor:pointer;"><i class="fas fa-cloud-upload-alt"></i> Upload</button>
+                    <input type="file" accept="image/*,video/*" style="display:none;" class="media-file-input">
+                </div>
+            </div>` + `<button onclick="this.parentNode.remove()" style="position:absolute;top:6px;right:8px;background:rgba(193,67,79,0.85);color:#fff;border:none;border-radius:5px;padding:4px 9px;cursor:pointer;font-size:11px;font-weight:600;">&#10005; Remove</button>`;
+            const input = wrapper.querySelector('.media-file-input');
+            const btn = wrapper.querySelector('.media-upload-btn');
+            btn.addEventListener('click', () => input.click());
+            input.addEventListener('change', async (e) => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+                const isVideo = file.type.startsWith('video/');
+                btn.textContent = 'Uploading...';
+                if (isVideo) {
+                    const form = new FormData(); form.append('video', file);
+                    try {
+                        const res = await fetch('/api/upload-video.php', { method: 'POST', body: form });
+                        const json = await res.json();
+                        if (json && json.success && json.url) {
+                            wrapper.querySelector('.media-inner').innerHTML = `<video src="${json.url}" muted autoplay loop playsinline class="portfolio-media portfolio-media-video" style="width:100%;height:100%;object-fit:cover;"></video>`;
+                        } else {
+                            wrapper.querySelector('.media-inner').innerHTML = '<div style="color:#f88;padding:12px;">Upload failed</div>';
+                        }
+                    } catch (err) {
+                        wrapper.querySelector('.media-inner').innerHTML = '<div style="color:#f88;padding:12px;">Network error</div>';
+                    }
+                } else {
+                    const url = URL.createObjectURL(file);
+                    wrapper.querySelector('.media-inner').innerHTML = `<img src="${url}" class="portfolio-media" style="width:100%;height:100%;object-fit:cover;"/>`;
+                }
+            });
         } else {
-            insertAfter.parentNode.insertBefore(wrapper, insertAfter.nextSibling);
+            wrapper.innerHTML = (templates[type] || `<p style="color:#e6f6ff;">New ${type}</p>`) +
+                `<button onclick="this.parentNode.remove()" style="position:absolute;top:6px;right:8px;background:rgba(193,67,79,0.85);color:#fff;border:none;border-radius:5px;padding:4px 9px;cursor:pointer;font-size:11px;font-weight:600;">&#10005; Remove</button>`;
         }
+
+        // Insert into iframe body near end so it's visible in preview
+        doc.body.appendChild(wrapper);
+        // make accessible and focusable
+        wrapper.tabIndex = 0;
+        wrapper.setAttribute('role', 'group');
+        wrapper.setAttribute('aria-label', 'Inserted content element');
+
+        // Add toolbar for glow/remove accessible controls
+        const tb = doc.createElement('div');
+        tb.className = 'ts-dropped-toolbar';
+        tb.style.cssText = 'position:absolute;top:-40px;right:8px;display:flex;gap:6px;';
+        tb.innerHTML = '<button class="ts-glow-toggle" aria-label="Toggle glow">Glow</button><button class="ts-remove" aria-label="Remove element">Remove</button>';
+        wrapper.appendChild(tb);
+
+        const glowBtn = tb.querySelector('.ts-glow-toggle');
+        const removeBtn = tb.querySelector('.ts-remove');
+        const targetNode = wrapper.querySelector('.portfolio-item') || wrapper.querySelector('.editor-media') || wrapper;
+
+        if (glowBtn) {
+            glowBtn.addEventListener('click', () => {
+                const had = targetNode.classList.contains('ts-glow');
+                if (had) targetNode.classList.remove('ts-glow'); else targetNode.classList.add('ts-glow');
+                this.pushAction({ type: 'glow', node: wrapper, prev: !!had });
+            });
+        }
+
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                this.pushAction({ type: 'remove', node: wrapper, parent: doc.body, nextSibling: wrapper.nextSibling });
+                wrapper.remove();
+            });
+        }
+
+        // Keyboard nudging for accessibility
+        wrapper.addEventListener('keydown', (e) => {
+            const step = e.shiftKey ? 20 : 8;
+            let moved = false;
+            const curLeft = parseFloat(wrapper.style.left) || 0;
+            const curTop = parseFloat(wrapper.style.top) || 0;
+            if (e.key === 'ArrowLeft') { wrapper.style.left = (curLeft - step) + 'px'; moved = true; }
+            if (e.key === 'ArrowRight') { wrapper.style.left = (curLeft + step) + 'px'; moved = true; }
+            if (e.key === 'ArrowUp') { wrapper.style.top = (curTop - step) + 'px'; moved = true; }
+            if (e.key === 'ArrowDown') { wrapper.style.top = (curTop + step) + 'px'; moved = true; }
+            if (moved) {
+                e.preventDefault(); e.stopPropagation();
+                this.pushAction({ type: 'move', node: wrapper, prev: { left: curLeft, top: curTop }, next: { left: parseFloat(wrapper.style.left)||0, top: parseFloat(wrapper.style.top)||0 } });
+            }
+        });
+
         wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
         this.showNotification('Added ' + type + ' element', 'success');
         this.logAction('Added element', type);
@@ -482,6 +600,69 @@ class WebsiteEditor {
         n.textContent = message;
         n.className = `notification notification-${type} show`;
         setTimeout(() => n.classList.remove('show'), 3000);
+    }
+
+    // Simple undo/redo stack for placed elements
+    pushAction(action) {
+        try {
+            this.undoStack.push(action);
+            // clear redo on new action
+            this.redoStack.length = 0;
+        } catch (e) { console.warn('pushAction failed', e); }
+    }
+
+    undo() {
+        const a = this.undoStack.pop();
+        if (!a) return;
+        try {
+            const doc = this.iframe.contentWindow.document;
+            if (a.type === 'add') {
+                if (a.node && a.node.parentNode) {
+                    a.node.parentNode.removeChild(a.node);
+                }
+            } else if (a.type === 'remove') {
+                if (a.parent) a.parent.insertBefore(a.node, a.nextSibling || null);
+            } else if (a.type === 'move') {
+                if (a.node) {
+                    a.node.style.left = (a.prev.left || 0) + 'px';
+                    a.node.style.top = (a.prev.top || 0) + 'px';
+                }
+            } else if (a.type === 'glow') {
+                if (a.node) {
+                    const t = a.node.querySelector('.portfolio-item') || a.node.querySelector('.editor-media') || a.node.querySelector('div');
+                    if (t) {
+                        if (a.prev) t.classList.add('ts-glow'); else t.classList.remove('ts-glow');
+                    }
+                }
+            }
+            this.redoStack.push(a);
+        } catch (e) { console.warn('undo failed', e); }
+    }
+
+    redo() {
+        const a = this.redoStack.pop();
+        if (!a) return;
+        try {
+            if (a.type === 'add') {
+                if (a.node) {
+                    const doc = this.iframe.contentWindow.document;
+                    doc.body.appendChild(a.node);
+                }
+            } else if (a.type === 'remove') {
+                if (a.node && a.node.parentNode) a.node.remove();
+            } else if (a.type === 'move') {
+                if (a.node) {
+                    a.node.style.left = (a.next.left || 0) + 'px';
+                    a.node.style.top = (a.next.top || 0) + 'px';
+                }
+            } else if (a.type === 'glow') {
+                const t = a.node.querySelector('.portfolio-item') || a.node.querySelector('.editor-media') || a.node.querySelector('div');
+                if (t) {
+                    if (!a.prev) t.classList.add('ts-glow'); else t.classList.remove('ts-glow');
+                }
+            }
+            this.undoStack.push(a);
+        } catch (e) { console.warn('redo failed', e); }
     }
 
     // Backward compat stubs

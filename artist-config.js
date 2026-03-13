@@ -62,6 +62,31 @@ const ARTIST_CONFIG = {
                 youtube: "https://www.youtube.com/@Washedrust"
             }
         }
+        ,
+        {
+            id: "5",
+            name: "Nova",
+            roleTitle: "Motion Designer",
+            discordTag: "@nova",
+            bio: "Motion graphics and trailer editor specializing in fast-paced cuts.",
+            avatarUrl: "",
+            socials: {
+                discord: "#",
+                youtube: "#"
+            }
+        },
+        {
+            id: "6",
+            name: "Echo",
+            roleTitle: "3D Artist",
+            discordTag: "@echo_art",
+            bio: "3D modeling, stickers and cinematic VFX.",
+            avatarUrl: "",
+            socials: {
+                discord: "#",
+                youtube: "#"
+            }
+        }
     ],
     
     
@@ -102,6 +127,23 @@ const ARTIST_CONFIG = {
             socials: {
                 discord: "https://discord.gg/dPj6S5Vc2A",
                 youtube: "https://www.youtube.com/@Washedrust"
+            }
+        }
+        ,
+        {
+            name: "Nova",
+            roleTitle: "Motion Designer",
+            socials: {
+                discord: "#",
+                youtube: "#"
+            }
+        },
+        {
+            name: "Echo",
+            roleTitle: "3D Artist",
+            socials: {
+                discord: "#",
+                youtube: "#"
             }
         }
     ],

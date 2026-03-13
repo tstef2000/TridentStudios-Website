@@ -36,6 +36,7 @@
     </nav>
 
     <!-- Artists Section -->
+    <div class="site-galaxy" aria-hidden="true"><div class="wave"></div></div>
     <section class="artists-hero">
         <h1 class="artists-title">OUR ARTISTS</h1>
         <p class="artists-subtitle">Meet the talented creators behind Trident Studios</p>
@@ -57,6 +58,7 @@
                         <div class="artist-links">
                             <a href="https://discord.gg/dPj6S5Vc2A" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
                             <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                            <a href="artist-portfolio.html?id=1" title="Portfolio" class="artist-link artist-portfolio-link" style="display:none;"><i class="fas fa-briefcase"></i></a>
                         </div>
                     </div>
                 </div>
@@ -74,6 +76,7 @@
                         <div class="artist-links">
                             <a href="https://discord.gg/dPj6S5Vc2A" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
                             <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                            <a href="artist-portfolio.html?id=2" title="Portfolio" class="artist-link artist-portfolio-link" style="display:none;"><i class="fas fa-briefcase"></i></a>
                         </div>
                     </div>
                 </div>
@@ -91,6 +94,7 @@
                         <div class="artist-links">
                             <a href="https://discord.gg/dPj6S5Vc2A" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
                             <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                            <a href="artist-portfolio.html?id=3" title="Portfolio" class="artist-link artist-portfolio-link" style="display:none;"><i class="fas fa-briefcase"></i></a>
                         </div>
                     </div>
                 </div>
@@ -108,6 +112,43 @@
                         <div class="artist-links">
                             <a href="https://discord.gg/dPj6S5Vc2A" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
                             <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                            <a href="artist-portfolio.html?id=4" title="Portfolio" class="artist-link artist-portfolio-link" style="display:none;"><i class="fas fa-briefcase"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artist 5 (placeholder for new artist) -->
+                <div class="artist-card" data-card-id="5">
+                    <div class="artist-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="artist-info">
+                        <h2 class="artist-name">New Artist</h2>
+                        <p class="artist-role">Motion Designer</p>
+                        <p class="artist-discord">@newartist</p>
+                        <p class="artist-bio">Short bio goes here.</p>
+                        <div class="artist-links">
+                            <a href="#" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
+                            <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                            <a href="artist-portfolio.html?id=5" title="Portfolio" class="artist-link artist-portfolio-link" style="display:none;"><i class="fas fa-briefcase"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artist 6 (placeholder for new artist) -->
+                <div class="artist-card" data-card-id="6">
+                    <div class="artist-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="artist-info">
+                        <h2 class="artist-name">New Artist</h2>
+                        <p class="artist-role">3D Artist</p>
+                        <p class="artist-discord">@newartist</p>
+                        <p class="artist-bio">Short bio goes here.</p>
+                        <div class="artist-links">
+                            <a href="#" title="Discord" class="artist-link"><i class="fab fa-discord"></i></a>
+                            <a href="#" title="YouTube" class="artist-link"><i class="fab fa-youtube"></i></a>
+                            <a href="artist-portfolio.html?id=6" title="Portfolio" class="artist-link artist-portfolio-link" style="display:none;"><i class="fas fa-briefcase"></i></a>
                         </div>
                     </div>
                 </div>
@@ -265,7 +306,11 @@
                     var html = '';
                     if (data.socials.discord && data.socials.discord !== '#') html += '<a href="' + data.socials.discord + '" title="Discord" class="artist-link" target="_blank"><i class="fab fa-discord"></i></a>';
                     if (data.socials.youtube && data.socials.youtube !== '#') html += '<a href="' + data.socials.youtube + '" title="YouTube" class="artist-link" target="_blank"><i class="fab fa-youtube"></i></a>';
+                    // Icon portfolio link (kept for compact view)
+                    html += '<a href="portfolios/artist-' + id + '.html" title="Portfolio" class="artist-link" target="_self"><i class="fas fa-briefcase"></i></a>';
                     if (html) links.innerHTML = html;
+
+                    // keep only the icon portfolio link (text link removed per request)
                 }
             });
 

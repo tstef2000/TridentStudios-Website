@@ -229,36 +229,67 @@ function setupNavigation() {
 // ========================================
 
 function setupScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.12,
-        rootMargin: '0px 0px -40px 0px'
-    };
+    // Use IntersectionObserver to drive a progress-controlled reveal.
+    // Start reveals a bit earlier and map to an ease-out-back curve for bounce.
+    const thresholds = [0, 0.25, 0.5, 0.75, 1];
+    // gentler easing with reduced overshoot for faster, smoother reveals
+    function easeOutBack(x) {
+        const c1 = 0.6;
+        const c3 = c1 + 1;
+        return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+    }
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-revealed');
-                observer.unobserve(entry.target);
+            const el = entry.target;
+            const ratio = Math.max(0, Math.min(1, entry.intersectionRatio));
+            // shift the start slightly so the animation begins earlier
+            const shifted = Math.max(0, (ratio - 0.0) / 1.0);
+            const eased = Math.min(1, Math.max(0, easeOutBack(shifted)));
+            el.style.setProperty('--reveal', String(eased));
+            if (ratio >= 0.9) {
+                el.classList.add('is-revealed');
+                observer.unobserve(el);
             }
         });
-    }, observerOptions);
+    }, { threshold: thresholds, rootMargin: '0px 0px -5% 0px' });
 
-    // Observe all animated elements
-    document.querySelectorAll('.service-card, .portfolio-item, .artist-card, .artist-social-card, .studio-social-link, .about-content, .official-server-card, .contact-method').forEach(el => {
-        el.classList.add('reveal-on-scroll');
-        observer.observe(el);
-    });
+    // Observe animated elements and initialize --reveal
+    const disableRevealOnArtistPages = /artist-portfolio\.html|artists\.html/.test(location.pathname);
+    const selectors = [
+        '.service-card',
+        // show portfolio items normally except on artist pages (they looked bad there)
+        ...(disableRevealOnArtistPages ? [] : ['.portfolio-item']),
+        ...(disableRevealOnArtistPages ? [] : ['.artist-card']),
+        '.artist-social-card', '.studio-social-link', '.about-content', '.official-server-card', '.contact-method'
+    ].filter(Boolean).join(', ');
 
-    // Parallax Effect for particles
-    window.addEventListener('scroll', () => {
+    if (selectors) {
+        document.querySelectorAll(selectors).forEach(el => {
+            el.classList.add('reveal-on-scroll');
+            el.style.setProperty('--reveal', '0');
+            observer.observe(el);
+        });
+    }
+
+    // Parallax Effect for particles — use rAF for smooth, performant updates
+    const particles = Array.from(document.querySelectorAll('.particle'));
+    let lastScroll = window.pageYOffset;
+    let ticking = false;
+    function updateParticles() {
         const scrolled = window.pageYOffset;
-        const particles = document.querySelectorAll('.particle');
-
         particles.forEach((particle, index) => {
-            const speed = (index + 1) * 0.5;
+            const speed = (index + 1) * 0.35;
             particle.style.transform = `translateY(${scrolled * speed}px)`;
         });
-    });
+        ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(updateParticles);
+            ticking = true;
+        }
+    }, { passive: true });
 
     // Animate counters in about section
     const aboutStats = document.querySelector('.about-stats');
@@ -270,9 +301,14 @@ function setupScrollAnimations() {
                     statsObserver.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.35, rootMargin: '0px 0px -20% 0px' });
         statsObserver.observe(aboutStats);
     }
+
+    // Add subtle animated backgrounds to sections that are visually plain
+    document.querySelectorAll('.portfolio, .services, .about, .contact').forEach(sec => {
+        sec.classList.add('bg-animated');
+    });
 }
 
 function animateCounters() {
