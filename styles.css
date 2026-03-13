@@ -487,7 +487,7 @@ button:focus,
     border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     position: relative;
 }
 
@@ -507,7 +507,7 @@ button:focus,
     justify-content: center;
     font-size: 64px;
     color: rgba(43, 179, 255, 0.15);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     overflow: hidden;
 }
 

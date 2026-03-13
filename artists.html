@@ -306,11 +306,10 @@
                     var html = '';
                     if (data.socials.discord && data.socials.discord !== '#') html += '<a href="' + data.socials.discord + '" title="Discord" class="artist-link" target="_blank"><i class="fab fa-discord"></i></a>';
                     if (data.socials.youtube && data.socials.youtube !== '#') html += '<a href="' + data.socials.youtube + '" title="YouTube" class="artist-link" target="_blank"><i class="fab fa-youtube"></i></a>';
-                    // Icon portfolio link (kept for compact view)
-                    html += '<a href="portfolios/artist-' + id + '.html" title="Portfolio" class="artist-link" target="_self"><i class="fas fa-briefcase"></i></a>';
+                    if (data.socials.twitch && data.socials.twitch !== '#') html += '<a href="' + data.socials.twitch + '" title="Twitch" class="artist-link" target="_blank"><i class="fab fa-twitch"></i></a>';
+                    if (data.socials.tiktok && data.socials.tiktok !== '#') html += '<a href="' + data.socials.tiktok + '" title="TikTok" class="artist-link" target="_blank"><i class="fab fa-tiktok"></i></a>';
+                    if (data.socials.x && data.socials.x !== '#') html += '<a href="' + data.socials.x + '" title="X (Twitter)" class="artist-link" target="_blank"><i class="fab fa-x-twitter"></i></a>';
                     if (html) links.innerHTML = html;
-
-                    // keep only the icon portfolio link (text link removed per request)
                 }
             });
 

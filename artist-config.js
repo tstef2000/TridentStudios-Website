@@ -23,7 +23,10 @@ const ARTIST_CONFIG = {
             avatarUrl: "https://i.postimg.cc/76jTH2cW/boringrose.png",
             socials: {
                 discord: "https://discord.gg/dPj6S5Vc2A",
-                youtube: "https://www.youtube.com/@boringrose123"
+                youtube: "https://www.youtube.com/@boringrose123",
+                twitch: "#",
+                tiktok: "#",
+                x: "#"
             }
         },
         {
@@ -35,7 +38,10 @@ const ARTIST_CONFIG = {
             avatarUrl: "https://i.postimg.cc/SsdtHmvN/Untitled.png", // Leave empty to use default icon
             socials: {
                 discord: "https://discord.gg/dPj6S5Vc2A",
-                youtube: "https://www.youtube.com/@MoonkieYT"
+                youtube: "https://www.youtube.com/@MoonkieYT",
+                twitch: "#",
+                tiktok: "#",
+                x: "#"
             }
         },
         {
@@ -47,7 +53,10 @@ const ARTIST_CONFIG = {
             avatarUrl: "https://i.postimg.cc/Hk8RjDrC/a-647352b9f67feb0c50cccc09903c4f17.gif",
             socials: {
                 discord: "https://discord.gg/dPj6S5Vc2A",
-                youtube: "https://www.youtube.com/@KrynnRust"
+                youtube: "https://www.youtube.com/@KrynnRust",
+                twitch: "#",
+                tiktok: "#",
+                x: "#"
             }
         },
         {
@@ -59,20 +68,26 @@ const ARTIST_CONFIG = {
             avatarUrl: "https://i.postimg.cc/HWwwPLgr/885e960afd3dba4409a41b994a71fab7.png",
             socials: {
                 discord: "https://discord.gg/dPj6S5Vc2A",
-                youtube: "https://www.youtube.com/@Washedrust"
+                youtube: "https://www.youtube.com/@Washedrust",
+                twitch: "#",
+                tiktok: "#",
+                x: "#"
             }
         }
         ,
         {
             id: "5",
-            name: "Nova",
-            roleTitle: "Motion Designer",
-            discordTag: "@nova",
-            bio: "Motion graphics and trailer editor specializing in fast-paced cuts.",
-            avatarUrl: "",
+            name: "Ghoul",
+            roleTitle: "Discord Planner/Designer & Digital Artist.",
+            discordTag: "@ghoulpop",
+            bio: "Specializing in Discord server planning/design & creating stunning discord banners.",
+            avatarUrl: "https://i.postimg.cc/1zKRZPp6/IMG-0519.gif",
             socials: {
-                discord: "#",
-                youtube: "#"
+                discord: "https://discord.gg/tridentfx",
+                youtube: "#",
+                twitch: "https://twitch.tv/rizkyraccz",
+                tiktok: "https://tiktok.com/@rizkyraccz",
+                x: "#"
             }
         },
         {
@@ -84,7 +99,10 @@ const ARTIST_CONFIG = {
             avatarUrl: "",
             socials: {
                 discord: "#",
-                youtube: "#"
+                youtube: "#",
+                twitch: "#",
+                tiktok: "#",
+                x: "#"
             }
         }
     ],
@@ -131,10 +149,10 @@ const ARTIST_CONFIG = {
         }
         ,
         {
-            name: "Nova",
-            roleTitle: "Motion Designer",
+            name: "Ghoul",
+            roleTitle: "Discord Designer & Digital Artist",
             socials: {
-                discord: "#",
+                discord: "https://discord.gg/tridentfx",
                 youtube: "#"
             }
         },

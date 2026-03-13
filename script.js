@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Portfolio renders first so reveal observers can include loaded items.
     loadPortfolioShowcase().finally(() => {
-        setupScrollAnimations();
+        setupPortfolioReveal();
     });
 });
 
@@ -76,31 +76,22 @@ async function loadPortfolioShowcase() {
             mediaWrap.className = 'portfolio-image';
 
             if ((item.mediaType || '').toLowerCase() === 'video' && item.mediaUrl) {
+                // Lazy video: placeholder until in view
                 const video = document.createElement('video');
                 video.className = 'portfolio-media portfolio-media-video';
-                video.setAttribute('preload', 'auto');
                 video.setAttribute('playsinline', '');
                 video.setAttribute('muted', '');
                 video.setAttribute('loop', '');
-                video.setAttribute('autoplay', '');
                 video.setAttribute('disablepictureinpicture', '');
                 video.setAttribute('disableremoteplayback', '');
                 video.setAttribute('controlslist', 'nofullscreen nodownload noremoteplayback');
                 video.defaultMuted = true;
                 video.muted = true;
                 video.volume = 0;
-                video.removeAttribute('poster');
-                video.addEventListener('volumechange', () => {
-                    if (!video.muted || video.volume !== 0) {
-                        video.muted = true;
-                        video.volume = 0;
-                    }
-                });
-                const source = document.createElement('source');
-                source.src = item.mediaUrl;
-                source.type = item.mimeType || 'video/mp4';
-                video.appendChild(source);
-                video.dataset.loaded = 'true';
+                video.poster = item.poster || '';
+                video.dataset.src = item.mediaUrl;
+                video.dataset.type = item.mimeType || 'video/mp4';
+                // Only load source when in view
                 mediaWrap.appendChild(video);
             } else if ((item.mediaType || '').toLowerCase() === 'link' && item.mediaUrl) {
                 const link = document.createElement('a');
@@ -146,13 +137,21 @@ function optimizePortfolioVideos(container) {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             const video = entry.target;
-            if (!entry.isIntersecting) {
+            if (entry.isIntersecting) {
+                // If not loaded, add source and autoplay
+                if (!video.dataset.loaded) {
+                    const source = document.createElement('source');
+                    source.src = video.dataset.src;
+                    source.type = video.dataset.type;
+                    video.appendChild(source);
+                    video.load();
+                    video.dataset.loaded = 'true';
+                }
+                video.currentTime = 0;
+                video.play().catch(() => {});
+            } else {
                 if (!video.paused) video.pause();
-                return;
             }
-
-            video.currentTime = 0;
-            video.play().catch(() => {});
         });
     }, {
         rootMargin: '200px 0px 200px 0px',
@@ -228,49 +227,24 @@ function setupNavigation() {
 // Scroll Animations
 // ========================================
 
-function setupScrollAnimations() {
-    // Use IntersectionObserver to drive a progress-controlled reveal.
-    // Start reveals a bit earlier and map to an ease-out-back curve for bounce.
-    const thresholds = [0, 0.25, 0.5, 0.75, 1];
-    // gentler easing with reduced overshoot for faster, smoother reveals
-    function easeOutBack(x) {
-        const c1 = 0.6;
-        const c3 = c1 + 1;
-        return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
-    }
+// New: Reveal all portfolio items at once when section is 25% in view
+function setupPortfolioReveal() {
+    const section = document.querySelector('.portfolio');
+    const items = document.querySelectorAll('.portfolio-item');
+    if (!section || !items.length) return;
 
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            const el = entry.target;
-            const ratio = Math.max(0, Math.min(1, entry.intersectionRatio));
-            // shift the start slightly so the animation begins earlier
-            const shifted = Math.max(0, (ratio - 0.0) / 1.0);
-            const eased = Math.min(1, Math.max(0, easeOutBack(shifted)));
-            el.style.setProperty('--reveal', String(eased));
-            if (ratio >= 0.9) {
-                el.classList.add('is-revealed');
-                observer.unobserve(el);
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                items.forEach(item => item.classList.add('is-revealed'));
+                observer.disconnect();
             }
         });
-    }, { threshold: thresholds, rootMargin: '0px 0px -5% 0px' });
-
-    // Observe animated elements and initialize --reveal
-    const disableRevealOnArtistPages = /artist-portfolio\.html|artists\.html/.test(location.pathname);
-    const selectors = [
-        '.service-card',
-        // show portfolio items normally except on artist pages (they looked bad there)
-        ...(disableRevealOnArtistPages ? [] : ['.portfolio-item']),
-        ...(disableRevealOnArtistPages ? [] : ['.artist-card']),
-        '.artist-social-card', '.studio-social-link', '.about-content', '.official-server-card', '.contact-method'
-    ].filter(Boolean).join(', ');
-
-    if (selectors) {
-        document.querySelectorAll(selectors).forEach(el => {
-            el.classList.add('reveal-on-scroll');
-            el.style.setProperty('--reveal', '0');
-            observer.observe(el);
-        });
-    }
+    }, {
+        rootMargin: '0px 0px -75% 0px', // 25% from top
+        threshold: 0.01
+    });
+    observer.observe(section);
 
     // Parallax Effect for particles — use rAF for smooth, performant updates
     const particles = Array.from(document.querySelectorAll('.particle'));

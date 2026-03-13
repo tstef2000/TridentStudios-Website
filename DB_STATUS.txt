@@ -1,0 +1,22 @@
+# Database Connection Status
+
+This file is automatically updated to show the current database connection status for Trident Studios Website.
+
+- If you see **Database Connected**, your site is using the database for dynamic features.
+- If you see **Database Not Connected**, your site is running in file-only mode (using JSON files for data).
+
+---
+
+## Status:
+
+Database Not Connected
+
+---
+
+## How to Fix (if you want database features):
+1. Check your database credentials in your environment variables or .env file.
+2. Make sure your MySQL/MariaDB server is running and accessible from this server.
+3. Check for errors in the logs (see logs/ directory).
+4. Restart the web server after fixing credentials or DB server.
+
+If you want to keep using file-only mode, no action is needed.
